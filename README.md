@@ -1,2 +1,4 @@
-# vump
-Bump tracked versions
+# gobump
+Tool to bump tracked versions
+
+
