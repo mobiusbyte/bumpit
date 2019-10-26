@@ -1,13 +1,14 @@
 import pytest
-import subprocess
+from click.testing import CliRunner
 
-
-GOBUMP_CLI = "gobump"
+from gobump.console.cli import gobump
 
 
 @pytest.mark.parametrize("part", ["patch"])
-@pytest.mark.parametrize("dryrun_option", ["-d", "--dryrun"])
-def test_semantic_versioning_dryrun(part, dryrun_option):
-    result = subprocess.run([GOBUMP_CLI, dryrun_option, part], stdout=subprocess.PIPE)
+@pytest.mark.parametrize("dryrun", ["-d", "--dryrun"])
+def test_semantic_versioning_dryrun(part, dryrun):
+    runner = CliRunner()
+    result = runner.invoke(gobump, ["--part", part, dryrun, "--strategy", "semver"])
 
-    assert result.stdout == b"stubby\n"
+    assert result.exit_code == 0
+    assert result.output == "stubby\n"
