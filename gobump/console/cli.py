@@ -23,4 +23,4 @@ def gobump(part, dryrun, strategy):
 
 
 def main():
-    gobump()
+    gobump()  # pragma: no cover
