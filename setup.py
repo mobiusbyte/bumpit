@@ -21,7 +21,7 @@ setup(
     entry_points={"console_scripts": ["gobump=gobump.console.cli:main"]},
     include_package_data=True,
     install_requires=["click"],
-    extras_require={"test": ["pytest"]},
+    extras_require={},
     classifiers=[
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.7",
