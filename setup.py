@@ -20,7 +20,7 @@ setup(
     packages=find_packages(),
     entry_points={"console_scripts": ["gobump=gobump.console.cli:main"]},
     include_package_data=True,
-    install_requires=["click"],
+    install_requires=["click", "pyyaml"],
     extras_require={},
     classifiers=[
         "Programming Language :: Python :: 3",
