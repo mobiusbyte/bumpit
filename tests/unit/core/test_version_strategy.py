@@ -1,6 +1,6 @@
 import pytest
 
-from gobump.core.version_strategy import (
+from bumpit.core.version_strategy import (
     new_version,
     SEMANTIC_VERSIONING,
     InvalidVersionPart,

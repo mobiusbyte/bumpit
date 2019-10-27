@@ -1,4 +1,4 @@
 [report]
 fail_under=100
 omit =
-    gobump/console/*
+    bumpit/console/*

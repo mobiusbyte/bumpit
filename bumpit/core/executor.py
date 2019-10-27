@@ -1,7 +1,7 @@
 from difflib import unified_diff
 
 
-class GoBump:
+class BumpIt:
     def __init__(self, folder, logger, dry_run):
         self._folder = folder
         self._logger = logger

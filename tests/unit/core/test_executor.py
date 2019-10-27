@@ -1,7 +1,7 @@
 from distutils.dir_util import copy_tree
 from shutil import rmtree
 
-from gobump.core.executor import GoBump
+from bumpit.core.executor import BumpIt
 from tests import fixture_path, tmp_folder
 
 
@@ -17,7 +17,7 @@ class LoggerSpy:
     error = log
 
 
-class TestGoBumpDryRun:
+class TestBumpItDryRun:
     def setup(self):
         self._logger_spy = LoggerSpy()
         self._current_version = "0.0.1"
@@ -31,7 +31,7 @@ class TestGoBumpDryRun:
 
     def test_bump_dry_run(self):
         files = self._tracked_files()
-        executor = GoBump(
+        executor = BumpIt(
             folder=self._tmp_folder, logger=self._logger_spy, dry_run=True
         )
         executor.bump(
@@ -74,7 +74,7 @@ class TestGoBumpDryRun:
 
     def test_bump(self):
         files = self._tracked_files()
-        executor = GoBump(
+        executor = BumpIt(
             folder=self._tmp_folder, logger=self._logger_spy, dry_run=False
         )
         executor.bump(

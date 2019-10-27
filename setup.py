@@ -4,21 +4,21 @@ with open("README.md", "rt", encoding="utf8") as f:
     readme = f.read()
 
 setup(
-    name="gobump",
+    name="bumpit",
     version="0.0.0",
     description="A CLI tool bumps versions in tracked files.",
     long_description=readme,
     long_description_content_type="text/markdown",
-    url="https://github.com/mobiusbyte/gobump",
+    url="https://github.com/mobiusbyte/bumpit",
     project_urls={
-        "Code": "https://github.com/mobiusbyte/gobump",
-        "Issue tracker": "https://github.com/mobiusbyte/gobump/issues",
+        "Code": "https://github.com/mobiusbyte/bumpit",
+        "Issue tracker": "https://github.com/mobiusbyte/bumpit/issues",
     },
     license="MIT",
     author="Jill San Luis",
     author_email="jill@mobiusbyte.com",
     packages=find_packages(),
-    entry_points={"console_scripts": ["gobump=gobump.console.cli:main"]},
+    entry_points={"console_scripts": ["bumpit=bumpit.console.cli:main"]},
     include_package_data=True,
     install_requires=["click", "pyyaml"],
     extras_require={},
