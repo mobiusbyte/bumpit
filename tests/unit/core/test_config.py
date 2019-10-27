@@ -8,6 +8,7 @@ class TestConfig:
         config = Configuration.parse(file=fixture_path("config/.bumpit.yaml"))
 
         assert config.current_version == "0.0.1"
+        assert config.strategy == "semver-minor"
         assert config.tracked_files == ["setup.py", "sample/VERSION"]
 
     def test_config_invalid(self):

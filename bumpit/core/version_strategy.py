@@ -15,29 +15,34 @@ class InvalidVersionPart(Exception):
     pass
 
 
-def new_version(strategy, current_version, part):
-    if strategy == SEMVER:
-        return SemanticVersion(current_version, part).bump()
+def new_version(strategy, current_version):
+    if SemanticVersion.matches(strategy):
+        return SemanticVersion(current_version, strategy).bump()
     else:
         raise UnsupportedVersioningStrategy(f"Invalid strategy {strategy}")
 
 
 class SemanticVersion:
+    STRATEGY_PREFIX = f"{SEMVER}-"
     VERSION_PARTS = ["major", "minor", "patch"]
     PATTERN = "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"  # noqa
 
-    def __init__(self, current_version, part):
+    def __init__(self, current_version, strategy):
         self._current_version = current_version
         self._match = re.search(self.PATTERN, current_version)
         if not self._match:
             raise InvalidVersion(f"Invalid semantic version format '{current_version}")
 
-        self._part = part
+        self._part = strategy[len(SemanticVersion.STRATEGY_PREFIX):]
         if self._part not in self.VERSION_PARTS:
             raise InvalidVersionPart(f"Invalid semantic version part f{self._part}.")
 
     def bump(self):
         return f"{self._bumped_version}{self._meta_token}"
+
+    @staticmethod
+    def matches(version):
+        return version.startswith(SemanticVersion.STRATEGY_PREFIX)
 
     @property
     def _bumped_version(self):

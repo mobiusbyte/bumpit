@@ -18,25 +18,16 @@ class ConsoleLogger:
 
 @click.command()
 @click.option(
-    "--part", "-p", prompt="version part", help="Specifies the vesion part to update"
-)
-@click.option(
-    "--dry_run",
+    "--dry-run",
     "-d",
     is_flag=True,
-    prompt="do a dry run?",
+    default=False,
     help="Run the tool in dry run mode",
 )
-@click.option(
-    "--strategy",
-    "-s",
-    prompt="versioning strategy",
-    help="Versioning strategy. Supported strategies: semver",
-)
 @click.option("--config", "-c", default=".bumpit.yaml", help="Configuration settings")
-def bumpit(part, dry_run, strategy, config):
+def bumpit(dry_run, config):
     configuration = Configuration.parse(config)
-    bumped_version = new_version(strategy, configuration.current_version, part)
+    bumped_version = new_version(configuration.strategy, configuration.current_version)
     executor = BumpIt(folder=os.getcwd(), logger=ConsoleLogger(), dry_run=dry_run)
     executor.bump(
         current_version=configuration.current_version,

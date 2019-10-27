@@ -1,4 +1,5 @@
 current_version: 0.0.1
+strategy: semver-minor
 tracked_files:
   - setup.py
   - sample/VERSION
