@@ -2,19 +2,7 @@ from distutils.dir_util import copy_tree
 from shutil import rmtree
 
 from bumpit.core.executor import BumpIt
-from tests import fixture_path, tmp_folder
-
-
-class LoggerSpy:
-    def __init__(self):
-        self.messages = []
-
-    def log(self, message):
-        self.messages.append(message)
-
-    warn = log
-    info = log
-    error = log
+from tests import fixture_path, tmp_folder, LoggerSpy
 
 
 class TestBumpItDryRun:

@@ -25,17 +25,11 @@ def new_version(strategy, current_version):
 class SemanticVersion:
     STRATEGY_PREFIX = f"{SEMVER}-"
     VERSION_PARTS = ["major", "minor", "patch"]
-    PATTERN = "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"  # noqa
 
     def __init__(self, current_version, strategy):
         self._current_version = current_version
-        self._match = re.search(self.PATTERN, current_version)
-        if not self._match:
-            raise InvalidVersion(f"Invalid semantic version format '{current_version}")
-
-        self._part = strategy[len(SemanticVersion.STRATEGY_PREFIX):]
-        if self._part not in self.VERSION_PARTS:
-            raise InvalidVersionPart(f"Invalid semantic version part f{self._part}.")
+        self._match = self._parse_version_match(current_version)
+        self._part = self._parse_part(strategy)
 
     def bump(self):
         return f"{self._bumped_version}{self._meta_token}"
@@ -65,3 +59,19 @@ class SemanticVersion:
             f"{self._match.group(1)}.{self._match.group(2)}.{self._match.group(3)}"
         )
         return self._current_version[prefix_meta_length:]
+
+    @staticmethod
+    def _parse_version_match(version):
+        semver_pattern = "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"  # noqa
+        match = re.search(semver_pattern, version)
+        if not match:
+            raise InvalidVersion(f"Invalid semantic version format '{version}")
+        return match
+
+    @staticmethod
+    def _parse_part(strategy):
+        prefix_len = len(SemanticVersion.STRATEGY_PREFIX)
+        part = strategy[prefix_len:]
+        if part not in SemanticVersion.VERSION_PARTS:
+            raise InvalidVersionPart(f"Invalid semantic version part f{part}.")
+        return part

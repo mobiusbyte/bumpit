@@ -16,3 +16,15 @@ def tmp_folder():
 
 def random_string():
     return "".join(random.choice(string.ascii_letters) for _ in range(6))
+
+
+class LoggerSpy:
+    def __init__(self):
+        self.messages = []
+
+    def log(self, message):
+        self.messages.append(message)
+
+    warn = log
+    info = log
+    error = log

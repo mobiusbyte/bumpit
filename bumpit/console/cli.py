@@ -2,6 +2,7 @@ import os
 import click
 from bumpit.core.config import Configuration
 from bumpit.core.executor import BumpIt
+from bumpit.core.vcs import Git
 from bumpit.core.version_strategy import new_version
 
 
@@ -18,22 +19,24 @@ class ConsoleLogger:
 
 @click.command()
 @click.option(
-    "--dry-run",
-    "-d",
-    is_flag=True,
-    default=False,
-    help="Run the tool in dry run mode",
+    "--dry-run", "-d", is_flag=True, default=False, help="Run the tool in dry run mode"
 )
 @click.option("--config", "-c", default=".bumpit.yaml", help="Configuration settings")
 def bumpit(dry_run, config):
     configuration = Configuration.parse(config)
-    bumped_version = new_version(configuration.strategy, configuration.current_version)
-    executor = BumpIt(folder=os.getcwd(), logger=ConsoleLogger(), dry_run=dry_run)
+    logger = ConsoleLogger()
+
+    executor = BumpIt(folder=os.getcwd(), logger=logger, dry_run=dry_run)
+    vcs = Git(dry_run=dry_run, logger=logger)
+
+    current_version = configuration.current_version
+    bumped_version = new_version(configuration.strategy, current_version)
     executor.bump(
-        current_version=configuration.current_version,
+        current_version=current_version,
         bumped_version=bumped_version,
         files=configuration.tracked_files + [config],
     )
+    vcs.commit(current_version=current_version, bumped_version=bumped_version)
 
 
 def main():
