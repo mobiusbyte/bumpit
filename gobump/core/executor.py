@@ -41,3 +41,5 @@ class GoBump:
                     self._logger.info(
                         f"Running DRY-RUN mode. Skipping changes to '{file}'..."
                     )
+                else:
+                    self._logger.info(f"Updated file '{file}'.")
