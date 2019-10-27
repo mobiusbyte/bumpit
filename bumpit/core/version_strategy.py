@@ -1,7 +1,5 @@
 import re
 
-SEMVER = "semver"
-
 
 class UnsupportedVersioningStrategy(Exception):
     pass
@@ -23,7 +21,7 @@ def new_version(strategy, current_version):
 
 
 class SemanticVersion:
-    STRATEGY_PREFIX = f"{SEMVER}-"
+    STRATEGY_PREFIX = f"semver-"
     VERSION_PARTS = ["major", "minor", "patch"]
 
     def __init__(self, current_version, strategy):
