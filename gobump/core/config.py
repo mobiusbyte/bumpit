@@ -4,6 +4,7 @@ import yaml
 
 @dataclass
 class Configuration:
+    version: str
     tracked_files: list
 
     @staticmethod
@@ -12,4 +13,9 @@ class Configuration:
         with open(file, "rb") as fh:
             contents = yaml.safe_load(fh)
 
-        return Configuration(tracked_files=contents.get("tracked_files") or [])
+        mandatory_fields = ["version", "tracked_files"]
+        for field in mandatory_fields:
+            if contents.get(field) is None:
+                raise ValueError(f"Configuration file is missing '{field}'")
+
+        return Configuration(**contents)
