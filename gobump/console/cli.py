@@ -6,7 +6,7 @@ import click
     "--part", "-p", prompt="version part", help="Specifies the vesion part to update"
 )
 @click.option(
-    "--dryrun",
+    "--dry_run",
     "-d",
     is_flag=True,
     prompt="do a dry run?",
@@ -18,7 +18,7 @@ import click
     prompt="versioning strategy",
     help="Versioning strategy. Supported strategies: semver",
 )
-def gobump(part, dryrun, strategy):
+def gobump(part, dry_run, strategy):
     print("stubby")
 
 
