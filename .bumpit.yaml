@@ -1,5 +1,5 @@
-current_version: "0.0.0"
-strategy: "semver-minor"
+current_version: "0.0.1"
+strategy: "semver-patch"
 tag: True
 tag_format: "{version}"
 tracked_files:

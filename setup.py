@@ -5,7 +5,7 @@ with open("README.md", "rt", encoding="utf8") as f:
 
 setup(
     name="bumpit",
-    version="0.0.0",
+    version="0.0.1",
     description="A CLI tool bumps versions in tracked files.",
     long_description=readme,
     long_description_content_type="text/markdown",
