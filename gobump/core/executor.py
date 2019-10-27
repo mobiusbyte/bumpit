@@ -2,11 +2,15 @@ from difflib import unified_diff
 
 
 class GoBump:
-    def __init__(self, folder, logger):
+    def __init__(self, folder, logger, dry_run):
         self._folder = folder
         self._logger = logger
+        self._dry_run = dry_run
 
     def bump(self, current_version, bumped_version, files):
+        if self._dry_run:
+            self._logger.info("Running in DRY-RUN mode...")
+
         for file in files:
             with open(file, "rb") as fh:
                 before_bump = fh.read().decode("utf-8")
@@ -32,3 +36,8 @@ class GoBump:
                         )
                     )
                 )
+
+                if self._dry_run:
+                    self._logger.info(
+                        f"Running DRY-RUN mode. Skipping changes to '{file}'..."
+                    )
