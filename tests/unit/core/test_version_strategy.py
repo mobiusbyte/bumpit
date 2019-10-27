@@ -2,7 +2,7 @@ import pytest
 
 from bumpit.core.version_strategy import (
     new_version,
-    SEMANTIC_VERSIONING,
+    SEMVER,
     InvalidVersionPart,
     UnsupportedVersioningStrategy,
     InvalidVersion,
@@ -20,7 +20,7 @@ from bumpit.core.version_strategy import (
 )
 def test_semantic_versioning(part, current_version, expected_new_version):
     actual_new_version = new_version(
-        strategy=SEMANTIC_VERSIONING, current_version=current_version, part=part
+        strategy=SEMVER, current_version=current_version, part=part
     )
     assert expected_new_version == actual_new_version
 
@@ -29,8 +29,8 @@ def test_semantic_versioning(part, current_version, expected_new_version):
     "strategy, current_version, part, expected_exception",
     [
         pytest.param("dummy", "0.0.0", "major", UnsupportedVersioningStrategy),
-        pytest.param(SEMANTIC_VERSIONING, "0.0.0", "dummy", InvalidVersionPart),
-        pytest.param(SEMANTIC_VERSIONING, "0.0.dummy", "major", InvalidVersion),
+        pytest.param(SEMVER, "0.0.0", "dummy", InvalidVersionPart),
+        pytest.param(SEMVER, "0.0.dummy", "major", InvalidVersion),
     ],
 )
 def test_new_version_invalid_params(

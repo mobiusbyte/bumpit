@@ -1,6 +1,6 @@
 import re
 
-SEMANTIC_VERSIONING = "semantic_versioning"
+SEMVER = "semver"
 
 
 class UnsupportedVersioningStrategy(Exception):
@@ -16,7 +16,7 @@ class InvalidVersionPart(Exception):
 
 
 def new_version(strategy, current_version, part):
-    if strategy == SEMANTIC_VERSIONING:
+    if strategy == SEMVER:
         return SemanticVersion(current_version, part).bump()
     else:
         raise UnsupportedVersioningStrategy(f"Invalid strategy {strategy}")
