@@ -27,7 +27,12 @@ def bumpit(dry_run, config):
     logger = ConsoleLogger()
 
     executor = BumpIt(folder=os.getcwd(), logger=logger, dry_run=dry_run)
-    vcs = Git(dry_run=dry_run, logger=logger)
+    vcs = Git(
+        dry_run=dry_run,
+        tag=configuration.tag,
+        tag_format=configuration.tag_format,
+        logger=logger,
+    )
 
     current_version = configuration.current_version
     bumped_version = new_version(configuration.strategy, current_version)
