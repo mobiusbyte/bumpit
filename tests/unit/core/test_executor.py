@@ -29,7 +29,7 @@ class TestBumpItDryRun:
         )
 
         assert [
-            "Running in DRY-RUN mode...",
+            "***Running in DRY-RUN mode...***",
             (
                 f"Could not find version {self._current_version} in file '{files[0]}'. "
                 f"Skipping..."
@@ -41,7 +41,7 @@ class TestBumpItDryRun:
                 f"-{self._current_version}\n"
                 f"+{self._bumped_version}"
             ),
-            f"Running DRY-RUN mode. Skipping changes to '{files[1]}'...",
+            f"[DRY-RUN] Skipping changes to '{files[1]}'...",
             (
                 f"--- before: {files[2]}\n"
                 f"+++ after: {files[2]}\n"
@@ -53,7 +53,7 @@ class TestBumpItDryRun:
                 f"-{self._current_version}\n"
                 f"+{self._bumped_version}"
             ),
-            f"Running DRY-RUN mode. Skipping changes to '{files[2]}'...",
+            f"[DRY-RUN] Skipping changes to '{files[2]}'...",
             (
                 f"Could not find version {self._current_version} in file '{files[3]}'. "
                 f"Skipping..."

@@ -34,11 +34,8 @@ class TestGit:
 
         assert self._command_executor.call_count == 0
         assert [
-            "Running DRY-RUN mode. Ran `git add .`",
-            (
-                "Running DRY-RUN mode. "
-                "Ran `git commit -m 'Bumped version from 0.0.0 → 1.0.0.'`"
-            ),
+            "[DRY-RUN] Ran `git add .`",
+            ("[DRY-RUN] " "Ran `git commit -m 'Bumped version from 0.0.0 → 1.0.0.'`"),
         ] == self._logger_spy.messages
 
     def test_commit(self):

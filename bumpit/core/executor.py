@@ -9,7 +9,7 @@ class BumpIt:
 
     def bump(self, current_version, bumped_version, files):
         if self._dry_run:
-            self._logger.info("Running in DRY-RUN mode...")
+            self._logger.info("***Running in DRY-RUN mode...***")
 
         for file in files:
             with open(file, "rb") as fh:
@@ -38,9 +38,7 @@ class BumpIt:
                 )
 
                 if self._dry_run:
-                    self._logger.info(
-                        f"Running DRY-RUN mode. Skipping changes to '{file}'..."
-                    )
+                    self._logger.info(f"[DRY-RUN] Skipping changes to '{file}'...")
                 else:
                     with open(file, "wb") as fh:
                         fh.write(after_bump.encode("utf-8"))

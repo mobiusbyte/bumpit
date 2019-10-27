@@ -15,7 +15,7 @@ class Git:
 
     def _execute_command(self, command):
         if self._dry_run:
-            self._logger.info(f"Running DRY-RUN mode. Ran `{command}`")
+            self._logger.info(f"[DRY-RUN] Ran `{command}`")
         else:
             if self._command_executor(command) != 0:
                 raise Exception(f"Failed to execute {command}")
