@@ -114,5 +114,14 @@ class TestGoBumpDryRun:
             ),
         ] == self._logger_spy.messages
 
+        for index in range(0, 4):
+            expected = self._file_contents(fixture_path(f"executors/after/file{index}"))
+            actual = self._file_contents(files[index])
+            assert expected == actual
+
+    def _file_contents(self, file):
+        with open(file, "rb") as fh:
+            return fh.read().decode("utf-8")
+
     def _tracked_files(self):
         return [f"{self._tmp_folder}/file{index}" for index in range(0, 4)]
