@@ -42,4 +42,7 @@ class GoBump:
                         f"Running DRY-RUN mode. Skipping changes to '{file}'..."
                     )
                 else:
+                    with open(file, "wb") as fh:
+                        fh.write(after_bump.encode("utf-8"))
+
                     self._logger.info(f"Updated file '{file}'.")

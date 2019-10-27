@@ -1,9 +1,8 @@
-import os
-import random
-import string
+from distutils.dir_util import copy_tree
 from shutil import rmtree
 
 from gobump.core.executor import GoBump
+from tests import fixture_path, tmp_folder
 
 
 class LoggerSpy:
@@ -20,10 +19,12 @@ class LoggerSpy:
 
 class TestGoBumpDryRun:
     def setup(self):
-        self._tmp_folder = tmp_folder()
         self._logger_spy = LoggerSpy()
         self._current_version = "0.0.1"
         self._bumped_version = "0.1.0"
+
+        self._tmp_folder = tmp_folder()
+        copy_tree(fixture_path("executors/before"), self._tmp_folder)
 
     def teardown(self):
         rmtree(self._tmp_folder, ignore_errors=True)
@@ -58,8 +59,8 @@ class TestGoBumpDryRun:
                 f"+++ after: {files[2]}\n"
                 f"@@ -1,4 +1,4 @@\n"
                 f" 14.04.6-LTS\n"
-                f"-            {self._current_version}       \n"
-                f"+            {self._bumped_version}       \n"
+                f"-            {self._current_version}...\n"
+                f"+            {self._bumped_version}...\n"
                 f" and another one\n"
                 f"-{self._current_version}\n"
                 f"+{self._bumped_version}"
@@ -100,8 +101,8 @@ class TestGoBumpDryRun:
                 f"+++ after: {files[2]}\n"
                 f"@@ -1,4 +1,4 @@\n"
                 f" 14.04.6-LTS\n"
-                f"-            {self._current_version}       \n"
-                f"+            {self._bumped_version}       \n"
+                f"-            {self._current_version}...\n"
+                f"+            {self._bumped_version}...\n"
                 f" and another one\n"
                 f"-{self._current_version}\n"
                 f"+{self._bumped_version}"
@@ -114,31 +115,4 @@ class TestGoBumpDryRun:
         ] == self._logger_spy.messages
 
     def _tracked_files(self):
-        return [
-            self._stub_file("99.88.77"),
-            self._stub_file(self._current_version),
-            self._stub_file(
-                f"14.04.6-LTS\n"
-                f"            {self._current_version}       \n"
-                f"and another one\n"
-                f"{self._current_version}"
-            ),
-            self._stub_file(""),
-        ]
-
-    def _stub_file(self, content):
-        filename = f"{self._tmp_folder}/{random_string()}"
-        with open(filename, "w") as fh:
-            fh.write(content)
-
-        return filename
-
-
-def tmp_folder():
-    folder = f"/tmp/{random_string()}"
-    os.makedirs(folder)
-    return folder
-
-
-def random_string():
-    return "".join(random.choice(string.ascii_letters) for _ in range(6))
+        return [f"{self._tmp_folder}/file{index}" for index in range(0, 4)]
