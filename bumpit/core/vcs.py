@@ -7,7 +7,7 @@ class Git:
         self._logger = logger
         self._command_executor = command_executor or os.system
 
-    def commit(self, current_version, bumped_version):
+    def update(self, current_version, bumped_version):
         self._execute_command("git add .")
         self._execute_command(
             f"git commit -m 'Bumped version from {current_version} → {bumped_version}.'"

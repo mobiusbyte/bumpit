@@ -24,13 +24,13 @@ class TestGit:
         self._current_version = "0.0.0"
         self._bumped_version = "1.0.0"
 
-    def test_commit_dry_run(self):
+    def test_update_dry_run(self):
         git = Git(
             dry_run=True,
             logger=self._logger_spy,
             command_executor=self._command_executor,
         )
-        git.commit(self._current_version, self._bumped_version)
+        git.update(self._current_version, self._bumped_version)
 
         assert self._command_executor.call_count == 0
         assert [
@@ -38,13 +38,13 @@ class TestGit:
             ("[DRY-RUN] " "Ran `git commit -m 'Bumped version from 0.0.0 → 1.0.0.'`"),
         ] == self._logger_spy.messages
 
-    def test_commit(self):
+    def test_update(self):
         git = Git(
             dry_run=False,
             logger=self._logger_spy,
             command_executor=self._command_executor,
         )
-        git.commit(self._current_version, self._bumped_version)
+        git.update(self._current_version, self._bumped_version)
 
         assert [
             "git add .",
@@ -55,11 +55,11 @@ class TestGit:
             "[OK] git commit -m 'Bumped version from 0.0.0 → 1.0.0.'",
         ] == self._logger_spy.messages
 
-    def test_commit_non_zero_exist_code(self):
+    def test_update_non_zero_exist_code(self):
         command_executor = CommandExecutorSpy(return_code=1)
 
         git = Git(
             dry_run=False, logger=self._logger_spy, command_executor=command_executor
         )
         with pytest.raises(Exception):
-            git.commit(self._current_version, self._bumped_version)
+            git.update(self._current_version, self._bumped_version)

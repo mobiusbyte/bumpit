@@ -36,7 +36,7 @@ def bumpit(dry_run, config):
         bumped_version=bumped_version,
         files=configuration.tracked_files + [config],
     )
-    vcs.commit(current_version=current_version, bumped_version=bumped_version)
+    vcs.update(current_version=current_version, bumped_version=bumped_version)
 
 
 def main():
