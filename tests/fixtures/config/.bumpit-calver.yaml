@@ -1,6 +1,6 @@
-current_version: "0.0.1"
-strategy: "semver-minor"
-tag: not_a_bool
+current_version: "201910.1"
+strategy: "calver"
+tag: True
 tag_format: "{version}"
 tracked_files:
   - setup.py

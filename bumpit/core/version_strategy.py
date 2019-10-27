@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 
 
 class UnsupportedVersioningStrategy(Exception):
@@ -16,6 +17,8 @@ class InvalidVersionPart(Exception):
 def new_version(strategy, current_version):
     if SemanticVersion.matches(strategy):
         return SemanticVersion(current_version, strategy).bump()
+    elif CalendarVersion.matches(strategy):
+        return CalendarVersion(current_version, strategy).bump()
     else:
         raise UnsupportedVersioningStrategy(f"Invalid strategy {strategy}")
 
@@ -33,8 +36,8 @@ class SemanticVersion:
         return f"{self._bumped_version}{self._meta_token}"
 
     @staticmethod
-    def matches(version):
-        return version.startswith(SemanticVersion.STRATEGY_PREFIX)
+    def matches(strategy):
+        return strategy.startswith(SemanticVersion.STRATEGY_PREFIX)
 
     @property
     def _bumped_version(self):
@@ -73,3 +76,37 @@ class SemanticVersion:
         if part not in SemanticVersion.VERSION_PARTS:
             raise InvalidVersionPart(f"Invalid semantic version part f{part}.")
         return part
+
+
+class CalendarVersion:
+    def __init__(self, current_version, _):
+        self._current_version = current_version
+        self._match = self._parse_version_match(current_version)
+
+    def bump(self):
+        version_month = datetime.strptime(self._match.group(1), "%Y%m")
+        variant_id = int(self._match.group(2))
+        today = datetime.today()
+        if today.month == version_month.month:
+            variant_id += 1
+        else:
+            version_month = today
+            variant_id = 1
+
+        version_format = f"{{formatted_version_month}}.{{formatted_variant_id}}"
+        return version_format.format(
+            formatted_version_month=version_month.strftime("%Y%m"),
+            formatted_variant_id=variant_id,
+        )
+
+    @staticmethod
+    def matches(strategy):
+        return strategy == "calver"
+
+    @staticmethod
+    def _parse_version_match(version):
+        regex_pattern = "^(\\d{6})\\.(\\d+)$"
+        match = re.search(regex_pattern, version)
+        if not match:
+            raise InvalidVersion(f"Invalid calendar version format '{version}")
+        return match
