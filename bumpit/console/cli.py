@@ -1,5 +1,7 @@
 import os
 import click
+from click import ClickException
+
 from bumpit.core.config import Configuration
 from bumpit.core.executor import BumpIt
 from bumpit.core.vcs import Git
@@ -29,25 +31,28 @@ class ConsoleLogger:
     help="Configuration settings",
 )
 def bumpit(dry_run, config):
-    configuration = Configuration.parse(config)
-    logger = ConsoleLogger()
+    try:
+        configuration = Configuration.parse(config)
+        logger = ConsoleLogger()
 
-    executor = BumpIt(folder=os.getcwd(), logger=logger, dry_run=dry_run)
-    vcs = Git(
-        dry_run=dry_run,
-        tag=configuration.tag,
-        tag_format=configuration.tag_format,
-        logger=logger,
-    )
+        executor = BumpIt(folder=os.getcwd(), logger=logger, dry_run=dry_run)
+        vcs = Git(
+            dry_run=dry_run,
+            tag=configuration.tag,
+            tag_format=configuration.tag_format,
+            logger=logger,
+        )
 
-    current_version = configuration.current_version
-    bumped_version = new_version(configuration.strategy, current_version)
-    executor.bump(
-        current_version=current_version,
-        bumped_version=bumped_version,
-        files=configuration.tracked_files + [config],
-    )
-    vcs.update(current_version=current_version, bumped_version=bumped_version)
+        current_version = configuration.current_version
+        bumped_version = new_version(configuration.strategy, current_version)
+        executor.bump(
+            current_version=current_version,
+            bumped_version=bumped_version,
+            files=configuration.tracked_files + [config],
+        )
+        vcs.update(current_version=current_version, bumped_version=bumped_version)
+    except Exception as e:
+        raise ClickException(e)
 
 
 def main():
