@@ -21,7 +21,13 @@ class ConsoleLogger:
 @click.option(
     "--dry-run", "-d", is_flag=True, default=False, help="Run the tool in dry run mode"
 )
-@click.option("--config", "-c", default=".bumpit.yaml", help="Configuration settings")
+@click.option(
+    "--config",
+    "-c",
+    default=".bumpit.yaml",
+    type=click.Path(exists=True),
+    help="Configuration settings",
+)
 def bumpit(dry_run, config):
     configuration = Configuration.parse(config)
     logger = ConsoleLogger()
