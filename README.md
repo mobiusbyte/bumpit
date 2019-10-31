@@ -58,7 +58,7 @@ where:
 * `strategy` - supported values `semver-major`, `semver-minor`, `semver-patch`, `calver`
 * `tag` - bool value to instruct the tool to tag the repository after the version update
 * `tag_format` - format of the tag. Some people prefer to add prefix to their tag versions (e.g. `release/1.0.1`). As long as the `{version}` is present, then it is a valid `tag_format`
-* `auto_remote_push` - bool flag that guards whether to push commit and/or tag changes to remote repository
+* `auto_remote_push` - bool flag that guards whether to push commit and/or tag changes to remote repository. It should never be wrapped in quotes so that it will be properly parsed as a bool
 * `tracked_files` - a list of relative filenames to update version to. If the current_version is not found, the tool simply skips this file
 
 # Examples
