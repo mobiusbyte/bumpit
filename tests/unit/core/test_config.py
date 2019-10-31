@@ -29,3 +29,7 @@ class TestConfig:
     def test_config_invalid_tag(self):
         with pytest.raises(ValueError):
             Configuration.parse(file=fixture_path("config/.bumpit-invalid-tag.yaml"))
+
+    def test_config_missing_file(self):
+        with pytest.raises(ValueError):
+            Configuration.parse(file="/tmp/not-a-file-kaboom")

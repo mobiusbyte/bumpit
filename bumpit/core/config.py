@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import os
 import yaml
 
 
@@ -12,9 +13,7 @@ class Configuration:
 
     @staticmethod
     def parse(file):
-        with open(file, "rb") as fh:
-            contents = yaml.safe_load(fh)
-        contents = contents or {}
+        contents = Configuration._load_config(file)
 
         mandatory_fields = [
             "current_version",
@@ -25,7 +24,7 @@ class Configuration:
         ]
         for field in mandatory_fields:
             if contents.get(field) is None:
-                raise ValueError(f"Configuration file is missing '{field}'")
+                raise ValueError(f"Configuration field is missing '{field}'")
 
         if contents["tag"] not in [True, False]:
             raise ValueError(
@@ -33,3 +32,13 @@ class Configuration:
             )
 
         return Configuration(**contents)
+
+    @staticmethod
+    def _load_config(file):
+        if not os.path.isfile(file):
+            raise ValueError(f"Invalid config file. Path '{file}' does not exist.")
+
+        with open(file, "rb") as fh:
+            contents = yaml.safe_load(fh)
+
+        return contents or {}
