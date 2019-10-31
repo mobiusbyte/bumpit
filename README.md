@@ -21,10 +21,6 @@ There are two ways to use `bumpit`
 At a high level, you need to
 1. setup the configuration file `.bumpconfig.yaml` in your target folder.
 2. run `bumpit` or use in the code
-3. and when you are ready, push the changes to your `remote`
-    ```shell
-    git push origin master --tags
-    ```
 
 ### Usage
 ```shell
@@ -52,6 +48,7 @@ current_version: "0.0.1"
 strategy: "semver-patch"
 tag: True
 tag_format: "{version}"
+auto_remote_push: True  # or False
 tracked_files:
 - setup.py
 ```
@@ -61,6 +58,7 @@ where:
 * `strategy` - supported values `semver-major`, `semver-minor`, `semver-patch`, `calver`
 * `tag` - bool value to instruct the tool to tag the repository after the version update
 * `tag_format` - format of the tag. Some people prefer to add prefix to their tag versions (e.g. `release/1.0.1`). As long as the `{version}` is present, then it is a valid `tag_format`
+* `auto_remote_push` - bool flag that guards whether to push commit and/or tag changes to remote repository
 * `tracked_files` - a list of relative filenames to update version to. If the current_version is not found, the tool simply skips this file
 
 # Examples
@@ -103,7 +101,6 @@ To publish `bumpit`, run the following
 git checkout master
 git pull
 bumpit
-git push origin master --tags
 python setup.py bdist_wheel sdist
 twine upload dist/*
 ```

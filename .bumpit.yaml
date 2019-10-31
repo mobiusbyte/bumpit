@@ -2,5 +2,6 @@ current_version: "0.0.4"
 strategy: "semver-patch"
 tag: True
 tag_format: "{version}"
+auto_remote_push: True
 tracked_files:
   - setup.py
