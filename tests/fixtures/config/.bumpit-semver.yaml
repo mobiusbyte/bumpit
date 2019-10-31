@@ -2,6 +2,7 @@ current_version: "0.0.1"
 strategy: "semver-minor"
 tag: True
 tag_format: "{version}"
+auto_remote_push: False
 tracked_files:
   - setup.py
   - sample/VERSION

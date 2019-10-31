@@ -11,6 +11,7 @@ class TestConfig:
         assert config.strategy == "semver-minor"
         assert config.tag
         assert config.tag_format == "{version}"
+        assert config.auto_remote_push is False
         assert config.tracked_files == ["setup.py", "sample/VERSION"]
 
     def test_config_calver(self):
@@ -20,6 +21,7 @@ class TestConfig:
         assert config.strategy == "calver"
         assert config.tag
         assert config.tag_format == "{version}"
+        assert config.auto_remote_push is False
         assert config.tracked_files == ["setup.py", "sample/VERSION"]
 
     def test_config_missing_fields(self):

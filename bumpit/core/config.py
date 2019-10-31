@@ -9,6 +9,7 @@ class Configuration:
     strategy: str
     tag: bool
     tag_format: str
+    auto_remote_push: bool
     tracked_files: list
 
     @staticmethod
