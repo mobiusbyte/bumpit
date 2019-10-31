@@ -5,7 +5,7 @@ with open("README.md", "rt", encoding="utf8") as f:
 
 setup(
     name="bumpit",
-    version="0.0.4",
+    version="0.1.0",
     description="A small command line tool to bump tracked versions in your repository.",
     long_description=readme,
     long_description_content_type="text/markdown",
