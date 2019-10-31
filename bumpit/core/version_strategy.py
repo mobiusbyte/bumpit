@@ -93,7 +93,7 @@ class CalendarVersion:
             version_month = today
             variant_id = 1
 
-        version_format = f"{{formatted_version_month}}.{{formatted_variant_id}}"
+        version_format = f"{{formatted_version_month}}.{{formatted_variant_id}}.0"
         return version_format.format(
             formatted_version_month=version_month.strftime("%Y%m"),
             formatted_variant_id=variant_id,
@@ -105,7 +105,7 @@ class CalendarVersion:
 
     @staticmethod
     def _parse_version_match(version):
-        regex_pattern = "^(\\d{6})\\.(\\d+)$"
+        regex_pattern = "^(\\d{6})\\.(\\d+).(\\d+)$"
         match = re.search(regex_pattern, version)
         if not match:
             raise InvalidVersion(f"Invalid calendar version format '{version}")

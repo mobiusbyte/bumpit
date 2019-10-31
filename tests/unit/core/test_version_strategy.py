@@ -28,10 +28,10 @@ def test_semantic_versioning(strategy, current_version, expected_new_version):
 @pytest.mark.parametrize(
     "current_version, current_date, expected_new_version",
     [
-        pytest.param("201910.100", date(2019, 10, 21), "201910.101"),
-        pytest.param("201910.100", date(2019, 10, 22), "201910.101"),
-        pytest.param("201910.100", date(2019, 11, 1), "201911.1"),
-        pytest.param("201912.100", date(2020, 1, 1), "202001.1"),
+        pytest.param("201910.100.0", date(2019, 10, 21), "201910.101.0"),
+        pytest.param("201910.100.0", date(2019, 10, 22), "201910.101.0"),
+        pytest.param("201910.100.0", date(2019, 11, 1), "201911.1.0"),
+        pytest.param("201912.100.0", date(2020, 1, 1), "202001.1.0"),
     ],
 )
 def test_calendar_versioning(current_version, current_date, expected_new_version):

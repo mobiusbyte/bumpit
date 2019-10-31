@@ -17,7 +17,7 @@ class TestConfig:
     def test_config_calver(self):
         config = Configuration.parse(file=fixture_path("config/.bumpit-calver.yaml"))
 
-        assert config.current_version == "201910.1"
+        assert config.current_version == "201910.1.0"
         assert config.strategy == "calver"
         assert config.tag
         assert config.tag_format == "{version}"
