@@ -30,6 +30,7 @@ class TestGit:
             dry_run=True,
             tag=False,
             tag_format=self._tag_format,
+            auto_remote_push=False,
             logger=self._logger_spy,
             command_executor=self._command_executor,
         )
@@ -40,6 +41,7 @@ class TestGit:
             "[DRY-RUN] Ran `git add .`",
             "[DRY-RUN] Ran `git commit -m 'Bumped version from 0.0.0 → 1.0.0.'`",
             "Skipped tagging...",
+            "Skipped pushing changes to remote...",
         ] == self._logger_spy.messages
 
     def test_update_tagging_disabled(self):
@@ -47,6 +49,7 @@ class TestGit:
             dry_run=False,
             tag=False,
             tag_format=self._tag_format,
+            auto_remote_push=False,
             logger=self._logger_spy,
             command_executor=self._command_executor,
         )
@@ -60,6 +63,7 @@ class TestGit:
             "[OK] git add .",
             "[OK] git commit -m 'Bumped version from 0.0.0 → 1.0.0.'",
             "Skipped tagging...",
+            "Skipped pushing changes to remote...",
         ] == self._logger_spy.messages
 
     def test_update_dry_run_tagging_enabled(self):
@@ -67,6 +71,7 @@ class TestGit:
             dry_run=True,
             tag=True,
             tag_format=self._tag_format,
+            auto_remote_push=False,
             logger=self._logger_spy,
             command_executor=self._command_executor,
         )
@@ -80,6 +85,29 @@ class TestGit:
                 "[DRY-RUN] "
                 "Ran `git tag -a 'v1.0.0' -m 'Bumped version from 0.0.0 → 1.0.0.'`"
             ),
+            "Skipped pushing changes to remote...",
+        ] == self._logger_spy.messages
+
+    def test_update_dry_run_auto_remote_push_enabled(self):
+        git = Git(
+            dry_run=True,
+            tag=True,
+            tag_format=self._tag_format,
+            auto_remote_push=True,
+            logger=self._logger_spy,
+            command_executor=self._command_executor,
+        )
+        git.update(self._current_version, self._bumped_version)
+
+        assert self._command_executor.call_count == 0
+        assert [
+            "[DRY-RUN] Ran `git add .`",
+            "[DRY-RUN] Ran `git commit -m 'Bumped version from 0.0.0 → 1.0.0.'`",
+            (
+                "[DRY-RUN] "
+                "Ran `git tag -a 'v1.0.0' -m 'Bumped version from 0.0.0 → 1.0.0.'`"
+            ),
+            "[DRY-RUN] Ran `git push origin master --tags`",
         ] == self._logger_spy.messages
 
     def test_invalid_tag_format(self):
@@ -88,6 +116,7 @@ class TestGit:
                 dry_run=True,
                 tag=True,
                 tag_format="invalid_format",
+                auto_remote_push=False,
                 logger=self._logger_spy,
                 command_executor=self._command_executor,
             )
@@ -99,6 +128,7 @@ class TestGit:
             dry_run=False,
             tag=False,
             tag_format=self._tag_format,
+            auto_remote_push=False,
             logger=self._logger_spy,
             command_executor=command_executor,
         )

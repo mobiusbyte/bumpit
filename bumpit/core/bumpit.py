@@ -13,6 +13,7 @@ def run(config, logger, dry_run):
         dry_run=dry_run,
         tag=configuration.tag,
         tag_format=configuration.tag_format,
+        auto_remote_push=configuration.auto_remote_push,
         logger=logger,
     )
 

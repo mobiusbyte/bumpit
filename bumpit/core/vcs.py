@@ -2,16 +2,20 @@ import os
 
 
 class Git:
-    def __init__(self, dry_run, tag, tag_format, logger, command_executor=None):
+    def __init__(
+        self, dry_run, tag, tag_format, auto_remote_push, logger, command_executor=None
+    ):
         self._dry_run = dry_run
         self._tag = tag
         self._tag_format = self._parse_tag_format(tag_format)
+        self._auto_remote_push = auto_remote_push
         self._logger = logger
         self._command_executor = command_executor or os.system
 
     def update(self, current_version, bumped_version):
         self._git_commit(current_version, bumped_version)
         self._git_tag(current_version, bumped_version)
+        self._git_push()
 
     def _git_commit(self, current_version, bumped_version):
         self._execute_command("git add .")
@@ -32,6 +36,12 @@ class Git:
         tag_command = tag_command_format.format(version=bumped_version)
 
         self._execute_command(tag_command)
+
+    def _git_push(self):
+        if self._auto_remote_push:
+            return self._execute_command("git push origin master --tags")
+        else:
+            self._logger.info("Skipped pushing changes to remote...")
 
     def _bump_message(self, current_version, bumped_version):
         return f"Bumped version from {current_version} → {bumped_version}."
