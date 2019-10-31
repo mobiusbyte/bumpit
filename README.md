@@ -10,17 +10,23 @@ You can download and install `bumpit` from PyPI by running:
 pip install bumpit
 ```
 
-# Usage
+# Usages
 
+There are two ways to use `bumpit`
+1. through the command line, or
+2. through your python code
+
+
+## Through CLI
 At a high level, you need to
 1. setup the configuration file `.bumpconfig.yaml` in your target folder.
-2. run `bumpit`.
+2. run `bumpit` or use in the code
 3. and when you are ready, push the changes to your `remote`
     ```shell
     git push origin master --tags
     ```
 
-## Usage
+### Usage
 ```shell
 Usage: bumpit [OPTIONS]
 
@@ -29,6 +35,12 @@ Options:
   -c, --config TEXT  Configuration settings
   --help             Show this message and exit.
 ```
+
+## Inside your program
+Just do `from bumpit.core.bumpit import run` in your code.
+
+Check out the [bumpit cli code](https://github.com/mobiusbyte/bumpit/blob/master/bumpit/console/cli.py#L29-L32) for concrete example.
+
 
 ## Configuration
 `bumpit` relies heavily on a configuration file to capture all runtime context of `bumpit`. This config file is named `.bumpconfig.yaml` by default. You can override this using the `--config` option in the command line.
