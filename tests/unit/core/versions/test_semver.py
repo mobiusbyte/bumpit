@@ -32,3 +32,8 @@ def test_parse(
     assert expected_build_metadata == semver.build_metadata
 
     assert version == str(semver)
+
+
+def test_parse_invalid():
+    with pytest.raises(ValueError):
+        SemVer.parse("blerg")
