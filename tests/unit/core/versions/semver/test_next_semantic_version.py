@@ -1,6 +1,6 @@
 import pytest
 
-from bumpit.core.versions import next_semantic_version
+from bumpit.core.versions.semver import next_semantic_version
 
 
 @pytest.mark.parametrize(
@@ -20,8 +20,9 @@ from bumpit.core.versions import next_semantic_version
     ],
 )
 def test_next_semantic_version(part, force_value, expected_next_version):
-    assert expected_next_version == next_semantic_version(
+    actual_next_version = next_semantic_version(
         current_version="1.2.3-alpha+exp.sha.1234f56",
         part=part,
         force_value=force_value,
     )
+    assert expected_next_version == actual_next_version
