@@ -34,7 +34,7 @@ class ConsoleLogger:
 @click.option(
     "--value",
     "-v",
-    default="",
+    default=None,
     help=(
         "Part value override. "
         "Any part can be overrode by this value as long as the value is valid."

@@ -9,6 +9,7 @@ from bumpit.core.versions import next_version
         pytest.param("minor", None, "1.3.0"),
         pytest.param("patch", None, "1.2.4"),
         pytest.param("pre_release", "beta", "1.2.3-beta"),
+        pytest.param("pre_release", "", "1.2.3"),
         pytest.param(
             "build_metadata", "exp.sha.5114f85", "1.2.3-alpha+exp.sha.5114f85"
         ),
