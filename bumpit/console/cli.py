@@ -25,9 +25,24 @@ class ConsoleLogger:
     type=click.Path(exists=True),
     help="Configuration settings",
 )
-def bumpit(dry_run, config):
+@click.option(
+    "--part",
+    "-p",
+    default="",
+    help="Strategy part override. Defaults to `strategy_part` from config file.",
+)
+@click.option(
+    "--value",
+    "-v",
+    default="",
+    help=(
+        "Part value override. "
+        "Any part can be overrode by this value as long as the value is valid."
+    ),
+)
+def bumpit(dry_run, config, part, value):
     try:
-        run(config, ConsoleLogger(), dry_run)
+        run(config, ConsoleLogger(), dry_run, target_part=part, force_value=value)
     except Exception as e:
         raise ClickException(e)
 

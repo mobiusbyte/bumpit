@@ -6,7 +6,7 @@ from bumpit.core.vcs import Git
 from bumpit.core.versions import next_version
 
 
-def run(config, logger, dry_run, target_part=None):
+def run(config, logger, dry_run, target_part=None, force_value=None):
     configuration = Configuration.parse(config)
 
     executor = BumpIt(configuration, dry_run, logger)
@@ -14,7 +14,10 @@ def run(config, logger, dry_run, target_part=None):
     part = target_part or configuration.strategy_part
 
     bumped_version = next_version(
-        configuration.strategy, configuration.current_version, part, None
+        configuration.strategy,
+        configuration.current_version,
+        part,
+        force_value=force_value,
     )
 
     executor.execute(bumped_version)
