@@ -47,3 +47,7 @@ class TestStaticTransformer:
     def test_transform(self, part, value, expected_version):
         new_semver = self._transform(part, SemVer.parse(self._raw_version), value)
         assert expected_version == str(new_semver)
+
+    def test_transform_invalid_part(self):
+        with pytest.raises(ValueError):
+            self._transform("dummy", SemVer.parse("2.0.0"), 1)
