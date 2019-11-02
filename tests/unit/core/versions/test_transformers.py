@@ -1,6 +1,6 @@
 import pytest
 
-from bumpit.core.transformers import IncrementingTransformer, StaticTransformer
+from bumpit.core.versions.transformers import IncrementingTransformer, StaticTransformer
 from bumpit.core.versions.semver import SemVer
 
 
