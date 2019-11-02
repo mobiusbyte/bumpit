@@ -17,12 +17,12 @@ class TestIncrementingTransformer:
             pytest.param("patch", "1.2.4"),
         ],
     )
-    def test_incrementing_transformer(self, part, expected_version):
+    def test_transform(self, part, expected_version):
         new_semver = self._transform(part, SemVer.parse(self._raw_version))
         assert expected_version == str(new_semver)
 
     @pytest.mark.parametrize("part", ["pre_release", "build_metadata"])
-    def test_incrementing_transformer_invalid_parts(self, part):
+    def test_transform_invalid_parts(self, part):
         with pytest.raises(ValueError):
             self._transform(part, SemVer.parse(self._raw_version))
 
@@ -44,6 +44,6 @@ class TestStaticTransformer:
             ),
         ],
     )
-    def test_incrementing_transformer(self, part, value, expected_version):
+    def test_transform(self, part, value, expected_version):
         new_semver = self._transform(part, SemVer.parse(self._raw_version), value)
         assert expected_version == str(new_semver)
