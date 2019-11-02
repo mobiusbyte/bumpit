@@ -2,12 +2,16 @@ from bumpit.core.versions.semver import SemVer
 
 
 class IncrementingTransformer:
+    INCREMENTING_FIELDS = ["major", "minor", "patch"]
+
     def __call__(self, part, version):
-        incrementing_fields = ["major", "minor", "patch"]
-        target_part_index = incrementing_fields.index(part)
+        try:
+            target_part_index = IncrementingTransformer.INCREMENTING_FIELDS.index(part)
+        except ValueError:
+            raise ValueError(f"Cannot increment {part}.")
 
         new_version = SemVer.parse("0.0.0")
-        for current_index, current_part in enumerate(incrementing_fields):
+        for current_index, current_part in enumerate(IncrementingTransformer.INCREMENTING_FIELDS):
             version_part = getattr(version, current_part)
             if current_index == target_part_index:
                 version_part += 1
