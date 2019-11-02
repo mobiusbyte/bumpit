@@ -60,3 +60,11 @@ class TestStaticTransformer:
     def test_transform_non_increasing_numerical_part(self, value):
         with pytest.raises(ValueError):
             self._transform("major", SemVer.parse("2.0.0"), value)
+
+    @pytest.mark.parametrize("part", ["pre_release", "build_metadata"])
+    def test_transform_non_changing_non_numerical_part(self, part):
+        version = SemVer.parse(self._raw_version)
+        value = getattr(version, part)
+
+        with pytest.raises(ValueError):
+            self._transform(part, version, value)
