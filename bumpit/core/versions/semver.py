@@ -8,7 +8,7 @@ class InvalidVersion(Exception):
     pass
 
 
-def next_semantic_version(current_version, part, force_value):
+def next_semantic_version(current_version, part, force_value, _=None):
     version = SemVer.parse(current_version)
     if force_value is None:
         transform = SemverIncrementingTransformer()
