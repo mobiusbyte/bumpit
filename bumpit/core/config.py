@@ -4,11 +4,34 @@ import yaml
 
 
 @dataclass
+class Strategy:
+    name: str
+    part: str
+
+    @staticmethod
+    def load(section):
+        try:
+            strategy = Strategy(**section)
+        except TypeError:
+            raise ValueError("Missing strategy name and/or part")
+
+        if not strategy.name:
+            raise ValueError("Strategy name cannot be empty")
+
+        if strategy.part is None:
+            raise ValueError("Strategy part cannot be null")
+
+        return strategy
+
+    def __eq__(self, other):
+        return self.name == other.name and self.part == other.part
+
+
+@dataclass
 class Configuration:
     config_file: str
     current_version: str
-    strategy: str
-    strategy_part: str
+    strategy: Strategy
     tag: bool
     tag_format: str
     auto_remote_push: bool
@@ -21,7 +44,6 @@ class Configuration:
         mandatory_fields = [
             "current_version",
             "strategy",
-            "strategy_part",
             "tag",
             "tag_format",
             "tracked_files",
@@ -35,6 +57,7 @@ class Configuration:
                 f"Invalid tag value '{contents['tag']}'. It should be a bool."
             )
 
+        contents["strategy"] = Strategy.load(contents["strategy"])
         contents["config_file"] = file
 
         return Configuration(**contents)

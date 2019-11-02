@@ -11,10 +11,10 @@ def run(config, logger, dry_run, target_part=None, force_value=None):
 
     executor = BumpIt(configuration, dry_run, logger)
 
-    part = target_part or configuration.strategy_part
+    part = target_part or configuration.strategy.part
 
     bumped_version = next_version(
-        configuration.strategy,
+        configuration.strategy.name,
         configuration.current_version,
         part,
         force_value=force_value,

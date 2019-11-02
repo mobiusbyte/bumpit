@@ -1,6 +1,7 @@
 current_version: "0.0.1"
-strategy: "semver"
-strategy_part: "minor"
+strategy:
+  name: "semver"
+  part: "minor"
 tag: True
 tag_format: "{version}"
 auto_remote_push: False

@@ -29,7 +29,7 @@ class ConsoleLogger:
     "--part",
     "-p",
     default="",
-    help="Strategy part override. Defaults to `strategy_part` from config file.",
+    help="Strategy part override. Defaults to `strategy.part` from config file.",
 )
 @click.option(
     "--value",
