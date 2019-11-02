@@ -28,12 +28,38 @@ class Strategy:
 
 
 @dataclass
+class Tag:
+    apply: bool
+    format: str
+
+    @staticmethod
+    def load(section):
+        apply = section.get("apply", "")
+        if not (apply is True or apply is False):
+            raise ValueError(
+                f"Invalid tag.apply value '{section.get('apply')}'. It should be a bool."
+            )
+
+        try:
+            tag = Tag(**section)
+        except TypeError:
+            raise ValueError("Missing tag apply and/or format")
+
+        if "{version}" not in tag.format:
+            raise ValueError("Tag format must include '{version}' token")
+
+        return tag
+
+    def __eq__(self, other):
+        return self.apply == other.apply and self.format == other.format
+
+
+@dataclass
 class Configuration:
     config_file: str
     current_version: str
     strategy: Strategy
-    tag: bool
-    tag_format: str
+    tag: Tag
     auto_remote_push: bool
     tracked_files: list
 
@@ -41,23 +67,13 @@ class Configuration:
     def parse(file):
         contents = Configuration._load_config(file)
 
-        mandatory_fields = [
-            "current_version",
-            "strategy",
-            "tag",
-            "tag_format",
-            "tracked_files",
-        ]
+        mandatory_fields = ["current_version", "strategy", "tag", "tracked_files"]
         for field in mandatory_fields:
             if contents.get(field) is None:
                 raise ValueError(f"Configuration field is missing '{field}'")
 
-        if contents["tag"] not in [True, False]:
-            raise ValueError(
-                f"Invalid tag value '{contents['tag']}'. It should be a bool."
-            )
-
         contents["strategy"] = Strategy.load(contents["strategy"])
+        contents["tag"] = Tag.load(contents["tag"])
         contents["config_file"] = file
 
         return Configuration(**contents)

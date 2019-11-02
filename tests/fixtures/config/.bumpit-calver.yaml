@@ -2,8 +2,9 @@ current_version: "201910.1.0"
 strategy:
   name: "calver"
   part: ""
-tag: True
-tag_format: "{version}"
+tag:
+  apply: True
+  format: "{version}"
 auto_remote_push: False
 tracked_files:
   - setup.py
