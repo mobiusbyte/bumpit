@@ -7,18 +7,16 @@ from bumpit.core.version_strategy import new_version
 
 
 def run(config, logger, dry_run):
-    executor = BumpIt(config, dry_run, logger)
-
     configuration = Configuration.parse(config)
+
+    executor = BumpIt(configuration, dry_run, logger)
 
     bumped_version = new_version(configuration.strategy, configuration.current_version)
     executor.execute(bumped_version)
 
 
 class BumpIt:
-    def __init__(self, config, dry_run, logger):
-        configuration = Configuration.parse(config)
-
+    def __init__(self, configuration, dry_run, logger):
         self._folder_manager = FolderManager(
             folder=os.getcwd(), logger=logger, dry_run=dry_run
         )
@@ -30,7 +28,7 @@ class BumpIt:
             logger=logger,
         )
         self._current_version = configuration.current_version
-        self._tracked_files = configuration.tracked_files + [config]
+        self._tracked_files = configuration.tracked_files + [configuration.config_file]
 
     def execute(self, bumped_version):
         self._folder_manager.update(
