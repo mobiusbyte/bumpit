@@ -1,5 +1,6 @@
 current_version: "201910.1.0"
 strategy: "calver"
+strategy_part: ""
 tag: True
 tag_format: "{version}"
 auto_remote_push: False

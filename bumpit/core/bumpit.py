@@ -3,15 +3,20 @@ import os
 from bumpit.core.config import Configuration
 from bumpit.core.folder import FolderManager
 from bumpit.core.vcs import Git
-from bumpit.core.version_strategy import new_version
+from bumpit.core.versions import next_version
 
 
-def run(config, logger, dry_run):
+def run(config, logger, dry_run, target_part=None):
     configuration = Configuration.parse(config)
 
     executor = BumpIt(configuration, dry_run, logger)
 
-    bumped_version = new_version(configuration.strategy, configuration.current_version)
+    part = target_part or configuration.strategy_part
+
+    bumped_version = next_version(
+        configuration.strategy, configuration.current_version, part, None
+    )
+
     executor.execute(bumped_version)
 
 

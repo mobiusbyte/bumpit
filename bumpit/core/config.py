@@ -8,6 +8,7 @@ class Configuration:
     config_file: str
     current_version: str
     strategy: str
+    strategy_part: str
     tag: bool
     tag_format: str
     auto_remote_push: bool
@@ -20,6 +21,7 @@ class Configuration:
         mandatory_fields = [
             "current_version",
             "strategy",
+            "strategy_part",
             "tag",
             "tag_format",
             "tracked_files",

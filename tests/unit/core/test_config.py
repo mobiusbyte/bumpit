@@ -10,7 +10,8 @@ class TestConfig:
 
         assert config.config_file == config_file
         assert config.current_version == "0.0.1"
-        assert config.strategy == "semver-minor"
+        assert config.strategy == "semver"
+        assert config.strategy_part == "minor"
         assert config.tag
         assert config.tag_format == "{version}"
         assert config.auto_remote_push is False
@@ -23,6 +24,7 @@ class TestConfig:
         assert config.config_file == config_file
         assert config.current_version == "201910.1.0"
         assert config.strategy == "calver"
+        assert config.strategy_part == ""
         assert config.tag
         assert config.tag_format == "{version}"
         assert config.auto_remote_push is False

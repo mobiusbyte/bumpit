@@ -8,4 +8,5 @@ class TestBumpIt:
             config=fixture_path("config/.bumpit-lite.yaml"),
             logger=LoggerSpy(),
             dry_run=True,
+            target_part=None,
         )
