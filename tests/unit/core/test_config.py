@@ -5,8 +5,10 @@ import pytest
 
 class TestConfig:
     def test_config_semver(self):
-        config = Configuration.parse(file=fixture_path("config/.bumpit-semver.yaml"))
+        config_file = fixture_path("config/.bumpit-semver.yaml")
+        config = Configuration.parse(file=config_file)
 
+        assert config.config_file == config_file
         assert config.current_version == "0.0.1"
         assert config.strategy == "semver-minor"
         assert config.tag
@@ -15,8 +17,10 @@ class TestConfig:
         assert config.tracked_files == ["setup.py", "sample/VERSION"]
 
     def test_config_calver(self):
-        config = Configuration.parse(file=fixture_path("config/.bumpit-calver.yaml"))
+        config_file = fixture_path("config/.bumpit-calver.yaml")
+        config = Configuration.parse(file=config_file)
 
+        assert config.config_file == config_file
         assert config.current_version == "201910.1.0"
         assert config.strategy == "calver"
         assert config.tag

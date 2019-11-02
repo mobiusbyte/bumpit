@@ -5,6 +5,7 @@ import yaml
 
 @dataclass
 class Configuration:
+    config_file: str
     current_version: str
     strategy: str
     tag: bool
@@ -31,6 +32,8 @@ class Configuration:
             raise ValueError(
                 f"Invalid tag value '{contents['tag']}'. It should be a bool."
             )
+
+        contents["config_file"] = file
 
         return Configuration(**contents)
 
