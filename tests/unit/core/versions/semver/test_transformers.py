@@ -1,13 +1,16 @@
 import pytest
 
-from bumpit.core.versions.transformers import IncrementingTransformer, StaticTransformer
-from bumpit.core.versions.semver import SemVer
+from bumpit.core.versions.semver import (
+    SemVer,
+    SemverIncrementingTransformer,
+    SemverStaticTransformer,
+)
 
 
 class TestIncrementingTransformer:
     def setup(self):
         self._raw_version = "1.2.3-alpha+exp.sha.5114f85"
-        self._transform = IncrementingTransformer()
+        self._transform = SemverIncrementingTransformer()
 
     @pytest.mark.parametrize(
         "part, expected_version",
@@ -30,7 +33,7 @@ class TestIncrementingTransformer:
 class TestStaticTransformer:
     def setup(self):
         self._raw_version = "1.2.3-alpha+exp.sha.5114f85"
-        self._transform = StaticTransformer()
+        self._transform = SemverStaticTransformer()
 
     @pytest.mark.parametrize(
         "part, value, expected_version",
