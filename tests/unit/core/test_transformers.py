@@ -39,7 +39,9 @@ class TestStaticTransformer:
             pytest.param("minor", "3", "1.3.0"),
             pytest.param("patch", "4", "1.2.4"),
             pytest.param("pre_release", "beta", "1.2.3-beta"),
-            pytest.param("build_metadata", "exp.sha.9876e54", "1.2.3-alpha+exp.sha.9876e54"),
+            pytest.param(
+                "build_metadata", "exp.sha.9876e54", "1.2.3-alpha+exp.sha.9876e54"
+            ),
         ],
     )
     def test_incrementing_transformer(self, part, value, expected_version):

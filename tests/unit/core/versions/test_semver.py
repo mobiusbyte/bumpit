@@ -4,7 +4,10 @@ from bumpit.core.versions.semver import SemVer
 
 
 @pytest.mark.parametrize(
-    "version, expected_major, expected_minor, expected_patch, expected_prerelease, expected_build_metadata",
+    (
+        "version, expected_major, expected_minor, expected_patch, "
+        "expected_prerelease, expected_build_metadata"
+    ),
     [
         pytest.param("1.2.3", 1, 2, 3, "", ""),
         pytest.param("1.2.3-beta", 1, 2, 3, "beta", ""),
@@ -12,7 +15,14 @@ from bumpit.core.versions.semver import SemVer
         pytest.param("1.2.3-beta+exp.sha.5114f85", 1, 2, 3, "beta", "exp.sha.5114f85"),
     ],
 )
-def test_parse(version, expected_major, expected_minor, expected_patch, expected_prerelease, expected_build_metadata):
+def test_parse(
+    version,
+    expected_major,
+    expected_minor,
+    expected_patch,
+    expected_prerelease,
+    expected_build_metadata,
+):
     semver = SemVer.parse(version)
 
     assert expected_major == semver.major
@@ -22,4 +32,3 @@ def test_parse(version, expected_major, expected_minor, expected_patch, expected
     assert expected_build_metadata == semver.build_metadata
 
     assert version == str(semver)
-

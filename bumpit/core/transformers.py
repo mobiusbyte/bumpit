@@ -37,7 +37,9 @@ class StaticTransformer:
         new_version = SemVer.parse("0.0.0")
 
         target_part_index = IncrementingTransformer.INCREMENTING_FIELDS.index(part)
-        for current_index, current_part in enumerate(StaticTransformer.NUMERICAL_FIELDS):
+        for current_index, current_part in enumerate(
+            StaticTransformer.NUMERICAL_FIELDS
+        ):
             version_part = getattr(version, current_part)
             if current_index == target_part_index:
                 version_part = static
