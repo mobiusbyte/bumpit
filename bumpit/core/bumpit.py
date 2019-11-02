@@ -7,15 +7,15 @@ from bumpit.core.version_strategy import new_version
 
 
 def run(config, logger, dry_run):
-    runner = Runner(config, dry_run, logger)
+    executor = BumpIt(config, dry_run, logger)
 
     configuration = Configuration.parse(config)
 
     bumped_version = new_version(configuration.strategy, configuration.current_version)
-    runner.execute(bumped_version)
+    executor.execute(bumped_version)
 
 
-class Runner:
+class BumpIt:
     def __init__(self, config, dry_run, logger):
         configuration = Configuration.parse(config)
 
