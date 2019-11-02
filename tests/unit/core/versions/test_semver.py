@@ -21,3 +21,5 @@ def test_parse(version, expected_major, expected_minor, expected_patch, expected
     assert expected_prerelease == semver.pre_release
     assert expected_build_metadata == semver.build_metadata
 
+    assert version == str(semver)
+
