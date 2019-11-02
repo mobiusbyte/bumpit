@@ -15,46 +15,47 @@ class TokenMatcherSpec:
     regex_pattern: str
 
 
-class VersionParser:
-    def __init__(self, version_format):
-        self._init_matcher(version_format)
+@dataclass
+class Token:
+    spec: TokenMatcherSpec
+    is_static: bool = False
 
-    def _init_matcher(self, version_format):
 
-        # (0|[1-9]\\d*)
-        mutex_tokens = [
-            [
-                TokenMatcherSpec(token="YYYY", regex_pattern="(\\d{4})"),
-                TokenMatcherSpec(token="YY", regex_pattern="(\\d{1,2})"),
-                TokenMatcherSpec(token="0Y", regex_pattern="(\\d{2})"),
-            ],
-            [
-                TokenMatcherSpec(token="MM", regex_pattern="(\\d{1,2})"),
-                TokenMatcherSpec(token="0M", regex_pattern="(\\d{2})"),
-            ],
-            [
-                TokenMatcherSpec(token="DD", regex_pattern="(\\d{1,2})"),
-                TokenMatcherSpec(token="0D", regex_pattern="(\\d{2})"),
-            ],
-            [TokenMatcherSpec(token="MINOR", regex_pattern="(0|[1-9]\\d*))")],
-            [TokenMatcherSpec(token="MICRO", regex_pattern="(0|[1-9]\\d*))")],
-            [
-                TokenMatcherSpec(
-                    token="MODIFIER", regex_pattern="(?:\\.[0-9a-zA-Z-]+)*))"
-                )
-            ],
-        ]
+class CalVerMatcher:
+    MUTEX_TOKEN_GROUPS = [
+        [
+            TokenMatcherSpec(token="YYYY", regex_pattern="(\\d{4})"),
+            TokenMatcherSpec(token="YY", regex_pattern="(\\d{1,2})"),
+            TokenMatcherSpec(token="0Y", regex_pattern="(\\d{2})"),
+        ],
+        [
+            TokenMatcherSpec(token="MM", regex_pattern="(\\d{1,2})"),
+            TokenMatcherSpec(token="0M", regex_pattern="(\\d{2})"),
+        ],
+        [
+            TokenMatcherSpec(token="DD", regex_pattern="(\\d{1,2})"),
+            TokenMatcherSpec(token="0D", regex_pattern="(\\d{2})"),
+        ],
+        [TokenMatcherSpec(token="MINOR", regex_pattern="(0|[1-9]\\d*))")],
+        [TokenMatcherSpec(token="MICRO", regex_pattern="(0|[1-9]\\d*))")],
+        [TokenMatcherSpec(token="MODIFIER", regex_pattern="(?:\\.[0-9a-zA-Z-]+)*))")],
+    ]
 
+    def search(self, version_format, version):
+        self._assert_version_format(version_format)
+
+    @staticmethod
+    def _assert_version_format(version_format):
         regex_pattern = f"^{version_format}$"
 
-        for mutex_tokens_set in mutex_tokens:
-            for x_spec in mutex_tokens_set:
+        for mutex_tokens in CalVerMatcher.MUTEX_TOKEN_GROUPS:
+            for x_spec in mutex_tokens:
                 if x_spec.token in regex_pattern:
-                    regex_pattern = VersionParser._update_regex(
+                    regex_pattern = CalVerMatcher._update_regex(
                         regex_pattern, token_matcher_spec=x_spec
                     )
 
-                    for y_spec in mutex_tokens_set:
+                    for y_spec in mutex_tokens:
                         if y_spec.token in regex_pattern:
                             raise ValueError(
                                 f"Cannot have '{y_spec.token}'. "
