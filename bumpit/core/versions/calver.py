@@ -45,17 +45,28 @@ class VersionParser:
             ],
         ]
 
-        remaining_version_format = version_format
+        regex_pattern = f"^{version_format}$"
+
         for mutex_tokens_set in mutex_tokens:
-            for index, x_spec in enumerate(mutex_tokens_set):
-                if x_spec.token in remaining_version_format:
-                    remaining_version_format = version_format.replace(
-                        x_spec.token, "", 1
+            for x_spec in mutex_tokens_set:
+                if x_spec.token in regex_pattern:
+                    regex_pattern = VersionParser._update_regex(
+                        regex_pattern, token_matcher_spec=x_spec
                     )
 
-                    for y_spec in mutex_tokens_set[index:]:
-                        if y_spec.token in remaining_version_format:
+                    for y_spec in mutex_tokens_set:
+                        if y_spec.token in regex_pattern:
                             raise ValueError(
                                 f"Cannot have '{y_spec.token}'. "
                                 f"The '{x_spec.token}' already exists."
                             )
+
+    @staticmethod
+    def _update_regex(regex_pattern, token_matcher_spec):
+        reverse_regex_pattern = regex_pattern[::-1]
+        reverse_token_replacement = token_matcher_spec.token[::-1]
+        regex_replacement = token_matcher_spec.regex_pattern[::-1]
+
+        return reverse_regex_pattern.replace(
+            reverse_token_replacement, regex_replacement, 1
+        )[::-1]
