@@ -1,6 +1,8 @@
 import re
 from dataclasses import dataclass
 
+SEMVER_STRATEGY = "semver"
+
 
 class InvalidVersion(Exception):
     pass
