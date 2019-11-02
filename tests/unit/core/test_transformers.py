@@ -55,3 +55,8 @@ class TestStaticTransformer:
     def test_transform_invalid_value_for_numerical_part(self):
         with pytest.raises(ValueError):
             self._transform("major", SemVer.parse("2.0.0"), "a")
+
+    @pytest.mark.parametrize("value", [1, 2])
+    def test_transform_non_increasing_numerical_part(self, value):
+        with pytest.raises(ValueError):
+            self._transform("major", SemVer.parse("2.0.0"), value)
