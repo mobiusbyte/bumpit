@@ -1,7 +1,7 @@
 from distutils.dir_util import copy_tree
 from shutil import rmtree
 
-from bumpit.core.executor import BumpIt
+from bumpit.core.folder import FolderManager
 from tests import fixture_path, tmp_folder, LoggerSpy
 
 
@@ -17,12 +17,12 @@ class TestBumpItDryRun:
     def teardown(self):
         rmtree(self._tmp_folder, ignore_errors=True)
 
-    def test_bump_dry_run(self):
+    def test_update_dry_run(self):
         files = self._tracked_files()
-        executor = BumpIt(
+        executor = FolderManager(
             folder=self._tmp_folder, logger=self._logger_spy, dry_run=True
         )
-        executor.bump(
+        executor.update(
             current_version=self._current_version,
             bumped_version=self._bumped_version,
             files=files,
@@ -60,12 +60,12 @@ class TestBumpItDryRun:
             ),
         ] == self._logger_spy.messages
 
-    def test_bump(self):
+    def test_update(self):
         files = self._tracked_files()
-        executor = BumpIt(
+        executor = FolderManager(
             folder=self._tmp_folder, logger=self._logger_spy, dry_run=False
         )
-        executor.bump(
+        executor.update(
             current_version=self._current_version,
             bumped_version=self._bumped_version,
             files=files,
