@@ -51,3 +51,7 @@ class TestStaticTransformer:
     def test_transform_invalid_part(self):
         with pytest.raises(ValueError):
             self._transform("dummy", SemVer.parse("2.0.0"), 1)
+
+    def test_transform_invalid_value_for_numerical_part(self):
+        with pytest.raises(ValueError):
+            self._transform("major", SemVer.parse("2.0.0"), "a")
