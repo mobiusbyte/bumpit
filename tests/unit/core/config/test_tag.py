@@ -1,5 +1,5 @@
 import pytest
-from bumpit.core.config import Tag
+from bumpit.core.config.tag import Tag
 
 
 class TestTag:

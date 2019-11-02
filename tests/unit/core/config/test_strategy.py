@@ -1,5 +1,5 @@
 import pytest
-from bumpit.core.config import Strategy
+from bumpit.core.config.strategy import Strategy
 
 
 class TestStrategy:
