@@ -75,26 +75,36 @@ class TokenMatcher:
 
     @staticmethod
     def _parse_version_format(version_format):
-        version_token_specs = []
+        matched_token_specs = []
         regex_pattern = f"{version_format}"
 
         for mutex_tokens in MUTEX_TOKEN_GROUPS:
-            for x_spec in mutex_tokens:
-                if x_spec.token in regex_pattern:
-                    regex_pattern = TokenMatcher._update_regex(
-                        regex_pattern, token_matcher_spec=x_spec
-                    )
+            regex_pattern, matched_token_specs = TokenMatcher._track_token_group(
+                mutex_tokens, regex_pattern, matched_token_specs
+            )
 
-                    for y_spec in mutex_tokens:
-                        if y_spec.token in regex_pattern:
-                            raise ValueError(
-                                f"Cannot have '{y_spec.token}'. "
-                                f"The '{x_spec.token}' already exists."
-                            )
+        return regex_pattern, matched_token_specs
 
-                    version_token_specs.append(x_spec)
+    @staticmethod
+    def _track_token_group(mutex_tokens, regex_pattern, matched_token_specs):
+        for target_spec in mutex_tokens:
+            regex_pattern, matched_token_specs = TokenMatcher._track_matched_token(
+                mutex_tokens, regex_pattern, matched_token_specs, target_spec
+            )
+        return regex_pattern, matched_token_specs
 
-        return regex_pattern, version_token_specs
+    @staticmethod
+    def _track_matched_token(
+        mutex_tokens, regex_pattern, matched_token_specs, target_spec
+    ):
+        if target_spec.token in regex_pattern:
+            regex_pattern = TokenMatcher._update_regex(
+                regex_pattern, token_matcher_spec=target_spec
+            )
+            TokenMatcher._assert_unique_part(target_spec, mutex_tokens, regex_pattern)
+            matched_token_specs.append(target_spec)
+
+        return regex_pattern, matched_token_specs
 
     @staticmethod
     def _update_regex(regex_pattern, token_matcher_spec):
@@ -130,3 +140,12 @@ class TokenMatcher:
         }
 
         return [ranked_token_specs[key] for key in sorted(ranked_token_specs)]
+
+    @staticmethod
+    def _assert_unique_part(known_spec, mutex_tokens, regex_pattern):
+        for test_spec in mutex_tokens:
+            if test_spec.token in regex_pattern:
+                raise ValueError(
+                    f"Cannot have '{test_spec.token}'. "
+                    f"The '{known_spec.token}' already exists."
+                )
