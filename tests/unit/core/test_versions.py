@@ -13,6 +13,7 @@ def test_next_version_semver():
         current_version="1.2.3-alpha+exp.sha.1234f56",
         part="major",
         force_value=None,
+        version_format=None,
     )
     assert expected_next_version == actual_next_version
 
@@ -32,4 +33,4 @@ def test_next_version_calver():
 
 def test_next_version_unsupported_strategy():
     with pytest.raises(ValueError):
-        next_version("dummy", "1.0.0", "minor", "2")
+        next_version("dummy", "1.0.0", "minor", "2", "")

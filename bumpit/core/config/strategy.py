@@ -5,6 +5,7 @@ from dataclasses import dataclass
 class Strategy:
     name: str
     part: str
+    version_format: str = None
 
     @staticmethod
     def load(section):

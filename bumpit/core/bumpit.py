@@ -18,6 +18,7 @@ def run(config, logger, dry_run, target_part=None, force_value=None):
         configuration.current_version,
         part,
         force_value=force_value,
+        version_format=configuration.strategy.version_format,
     )
 
     executor.execute(bumped_version)

@@ -1,7 +1,8 @@
 current_version: "201910.1.0"
 strategy:
   name: "calver"
-  part: ""
+  part: "auto"
+  version_format: "YYYYMM.MINOR.MICRO"
 tag:
   apply: True
   format: "{version}"

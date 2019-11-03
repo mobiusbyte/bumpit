@@ -24,7 +24,8 @@ class TestConfig:
         assert config.config_file == config_file
         assert config.current_version == "201910.1.0"
         assert config.strategy.name == "calver"
-        assert config.strategy.part == ""
+        assert config.strategy.part == "auto"
+        assert config.strategy.version_format == "YYYYMM.MINOR.MICRO"
         assert config.tag.apply
         assert config.tag.format == "{version}"
         assert config.auto_remote_push is False
