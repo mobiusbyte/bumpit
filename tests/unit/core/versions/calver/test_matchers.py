@@ -1,6 +1,6 @@
 import pytest
 
-from bumpit.core.versions.calver import TokenMatcher
+from bumpit.core.versions.calver.matchers import TokenMatcher
 
 
 def fixture_generator():

@@ -3,7 +3,7 @@ from datetime import date
 import pytest
 from freezegun import freeze_time
 
-from bumpit.core.versions.calver import (
+from bumpit.core.versions.calver.transformers import (
     CalverIncrementingTransformer,
     CalVer,
     CalverStaticTransformer,
