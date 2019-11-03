@@ -157,6 +157,10 @@ python setup.py bdist_wheel sdist
 twine upload dist/*
 ```
 
+# Credits
+Thankful for the generous tools provided by:
+* [GitHub](https://github.com/) - project hosting
+* [CircleCI](https://circleci.com/) - continuous integration
 
 # License
 `bumpit` is released under the [MIT License](https://opensource.org/licenses/MIT).
