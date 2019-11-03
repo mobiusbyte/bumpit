@@ -15,20 +15,22 @@ NUMERICAL_PARTS = [MAJOR_PART, MINOR_PART, MICRO_PART]
 
 
 class CalverIncrementingTransformer:
+    def __init__(self):
+        self._transform_delegate = CalverStaticTransformer()
+
     def __call__(self, part, version):
-        transform_delegate = CalverStaticTransformer()
         today = datetime.today().date()
 
         if part == TRANSFORM_DATE_PART:
-            return transform_delegate(part, version, today)
+            return self._transform_delegate(part, version, today)
         elif part in NUMERICAL_PARTS:
-            return transform_delegate(part, version, getattr(version, part) + 1)
+            return self._transform_delegate(part, version, getattr(version, part) + 1)
         elif part == AUTOINCREMENT_PARTS:
-            return self._auto_transform(today, version, transform_delegate)
+            return self._auto_transform(today, version)
 
         raise ValueError(f"Cannot increment {part}.")
 
-    def _auto_transform(self, today, version, transform_delegate):
+    def _auto_transform(self, today, version):
         version_format = version.version_format
 
         probe_version = parse_calver(str(version), version_format)
@@ -45,13 +47,16 @@ class CalverIncrementingTransformer:
                 CalVer(version_format, calendar_date=today, formatter=version.formatter)
             )
         else:
-            for part in NUMERICAL_PARTS:
-                if part in probe_version.formatter:
-                    return transform_delegate(
-                        part, probe_version, getattr(probe_version, part) + 1
-                    )
+            return self._auto_update_numerical_parts(probe_version)
 
-            raise ValueError(f"No detected version change.")
+    def _auto_update_numerical_parts(self, version):
+        for part in NUMERICAL_PARTS:
+            if part in version.formatter:
+                return self._transform_delegate(
+                    part, version, getattr(version, part) + 1
+                )
+
+        raise ValueError(f"No detected version change.")
 
 
 class CalverStaticTransformer:
