@@ -111,15 +111,34 @@ Out of the box, `bumpit` can auto update the `major`, `minor`, and the `patch` p
 
 
 ## Calendar Version
-`bumpit` implements a very basic calver scheme. It assumes that the version follows the format `YYYYmm.variant` where
-* `YYYY` - year
-* `mm` - month zero padded
-* `variant` - incrementing integer to distinguish different version for the same month
+`bumpit` supports calver specification defined in [calver.org](https://calver.org/) and covers [use cases](https://calver.org/users.html) described in the specification website.
 
-When the month rolls over to the next, `YYYYmm` will be the new month, and `variant` resets to `1`.
+### Configuration
+Here is an [example](https://github.com/mobiusbyte/bumpit/blob/master/tests/fixtures/config/.bumpit-calver.yaml) of a configuration file for calver.
 
-The format is quite concrete. This was sufficient enough for my use case. However, if you feel that this is too simplistic, please feel free to create an issue and perhaps a PR of your proposed solution.
+Important notes on configuration:
+* `strategy.name` must be `calver`
+* `strategy.part` supported values are `auto`, `date`, `major`, `minor`, `micro`
+* `startegy.version_format` combination of `calver` parts. Note that `bumpit` does check that only one representation of part is present in the format. For example, you cannot have `MM` and `0M` in the same token because they both refer to `month`.
 
+See [calver scheme](https://calver.org/#scheme) for supported formats.
+
+### Part updates
+Any calver part can be updated by giving `bumpit` a specific value to update the part to. This can be done through:
+ - command line by using the `--part and --value` cli options, or
+ - program by providing the `target_part` and `force_value` in [bumpit#run](https://github.com/mobiusbyte/bumpit/blob/master/bumpit/core/bumpit.py) method
+
+Due to the free form nature of the `modifier`, this can only be updated through the force method described above.
+
+However, the biggest gain from using `bumpit` is to let the tool auto update your versions for you.
+
+Out of the box, `bumpit` can auto update the `auto`, `date`, `major`, `minor`, and the `micro` parts of calver. To accomplish this, specify the target part in the config file `strategy.part` section. This is also the order of precedence when updating the parts. Updating the higher precedent part resets the lower precedent parts. For example, if the date is update, then all `major`, `minor`, `micro`, `modifier` will be reset to their respective default values.
+
+Reset values:
+- `major` resets to `0`
+- `minor` resets to `0`
+- `micro` resets to `0`
+- `modifier` resets to an empty string `""`
 
 # Development
 ## Contribution
