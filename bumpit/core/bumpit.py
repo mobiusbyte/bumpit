@@ -4,6 +4,7 @@ from bumpit.core.config import Configuration
 from bumpit.core.folder import FolderManager
 from bumpit.core.vcs import Git, GitSettings
 from bumpit.core.versions import next_version
+from bumpit.core.versions.strategy import StrategySettings
 
 
 def run(config, logger, dry_run, target_part=None, force_value=None):
@@ -14,11 +15,13 @@ def run(config, logger, dry_run, target_part=None, force_value=None):
     part = target_part or configuration.strategy.part
 
     bumped_version = next_version(
-        configuration.strategy.name,
-        configuration.current_version,
-        part,
+        strategy_settings=StrategySettings(
+            target_strategy=configuration.strategy.name,
+            version_format=configuration.strategy.version_format,
+            current_version=configuration.current_version,
+        ),
+        part=part,
         force_value=force_value,
-        version_format=configuration.strategy.version_format,
     )
 
     executor.execute(bumped_version)

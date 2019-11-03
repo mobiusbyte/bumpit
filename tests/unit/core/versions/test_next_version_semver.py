@@ -1,6 +1,7 @@
 import pytest
 
 from bumpit.core.versions import next_version, SEMVER_STRATEGY
+from bumpit.core.versions.strategy import StrategySettings
 
 
 @pytest.mark.parametrize(
@@ -21,10 +22,12 @@ from bumpit.core.versions import next_version, SEMVER_STRATEGY
 )
 def test_next_semantic_version(part, force_value, expected_next_version):
     actual_next_version = next_version(
-        target_strategy=SEMVER_STRATEGY,
-        current_version="1.2.3-alpha+exp.sha.1234f56",
+        strategy_settings=StrategySettings(
+            target_strategy=SEMVER_STRATEGY,
+            current_version="1.2.3-alpha+exp.sha.1234f56",
+            version_format=None,
+        ),
         part=part,
         force_value=force_value,
-        version_format=None,
     )
     assert expected_next_version == actual_next_version

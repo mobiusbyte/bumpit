@@ -15,10 +15,12 @@ CALVER_STRATEGY = "calver"
 SEMVER_STRATEGY = "semver"
 
 
-def next_version(target_strategy, current_version, part, force_value, version_format):
-    delegate = _resolve_strategy(target_strategy)
+def next_version(strategy_settings, part, force_value):
+    delegate = _resolve_strategy(strategy_settings.target_strategy)
 
-    version = delegate.version_parser(current_version, version_format)
+    version = delegate.version_parser(
+        strategy_settings.current_version, strategy_settings.version_format
+    )
     if force_value is None:
         bumped_version = delegate.increment_transform(part, version)
     else:

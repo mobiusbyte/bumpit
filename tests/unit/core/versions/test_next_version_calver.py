@@ -4,6 +4,7 @@ import pytest
 from freezegun import freeze_time
 
 from bumpit.core.versions import next_version, CALVER_STRATEGY
+from bumpit.core.versions.strategy import StrategySettings
 
 
 @pytest.mark.parametrize(
@@ -24,10 +25,12 @@ def test_next_calendar_version(part, force_value, expected_next_version):
     today = date(2020, 1, 1)
     with freeze_time(today):
         actual_new_version = next_version(
-            target_strategy=CALVER_STRATEGY,
-            current_version="201910.1.10.100.abc",
+            strategy_settings=StrategySettings(
+                target_strategy=CALVER_STRATEGY,
+                current_version="201910.1.10.100.abc",
+                version_format="YYYY0M.MAJOR.MINOR.MICRO.MODIFIER",
+            ),
             part=part,
             force_value=force_value,
-            version_format="YYYY0M.MAJOR.MINOR.MICRO.MODIFIER",
         )
         assert expected_next_version == actual_new_version
