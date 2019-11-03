@@ -11,7 +11,7 @@ from bumpit.core.versions.calver.formatters import build_formatter
 from bumpit.core.versions.calver.matchers import TokenMatcher
 
 
-def parse(version_format, version):
+def parse_calver(version, version_format):
     regex_pattern, token_specs = TokenMatcher.build(version_format)
 
     match = re.search(f"^{regex_pattern}$", version)

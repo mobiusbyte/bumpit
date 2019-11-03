@@ -1,6 +1,6 @@
 import pytest
 
-from bumpit.core.versions.semver.parsers import parse
+from bumpit.core.versions.semver.parsers import parse_semver
 from bumpit.core.versions.semver.transformers import (
     SemverIncrementingTransformer,
     SemverStaticTransformer,
@@ -21,13 +21,13 @@ class TestIncrementingTransformer:
         ],
     )
     def test_transform(self, part, expected_version):
-        new_semver = self._transform(part, parse(self._raw_version))
+        new_semver = self._transform(part, parse_semver(self._raw_version))
         assert expected_version == str(new_semver)
 
     @pytest.mark.parametrize("part", ["pre_release", "build_metadata"])
     def test_transform_invalid_parts(self, part):
         with pytest.raises(ValueError):
-            self._transform(part, parse(self._raw_version))
+            self._transform(part, parse_semver(self._raw_version))
 
 
 class TestStaticTransformer:
@@ -48,25 +48,25 @@ class TestStaticTransformer:
         ],
     )
     def test_transform(self, part, value, expected_version):
-        new_semver = self._transform(part, parse(self._raw_version), value)
+        new_semver = self._transform(part, parse_semver(self._raw_version), value)
         assert expected_version == str(new_semver)
 
     def test_transform_invalid_part(self):
         with pytest.raises(ValueError):
-            self._transform("dummy", parse("2.0.0"), 1)
+            self._transform("dummy", parse_semver("2.0.0"), 1)
 
     def test_transform_invalid_value_for_numerical_part(self):
         with pytest.raises(ValueError):
-            self._transform("major", parse("2.0.0"), "a")
+            self._transform("major", parse_semver("2.0.0"), "a")
 
     @pytest.mark.parametrize("value", [1, 2])
     def test_transform_non_increasing_numerical_part(self, value):
         with pytest.raises(ValueError):
-            self._transform("major", parse("2.0.0"), value)
+            self._transform("major", parse_semver("2.0.0"), value)
 
     @pytest.mark.parametrize("part", ["pre_release", "build_metadata"])
     def test_transform_non_changing_non_numerical_part(self, part):
-        version = parse(self._raw_version)
+        version = parse_semver(self._raw_version)
         value = getattr(version, part)
 
         with pytest.raises(ValueError):

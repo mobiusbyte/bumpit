@@ -1,6 +1,6 @@
 import pytest
 
-from bumpit.core.versions.semver.parsers import parse
+from bumpit.core.versions.semver.parsers import parse_semver
 
 
 @pytest.mark.parametrize(
@@ -23,7 +23,7 @@ def test_parse(
     expected_prerelease,
     expected_build_metadata,
 ):
-    semver = parse(version)
+    semver = parse_semver(version)
 
     assert expected_major == semver.major
     assert expected_minor == semver.minor
@@ -36,4 +36,4 @@ def test_parse(
 
 def test_parse_invalid():
     with pytest.raises(ValueError):
-        parse("blerg")
+        parse_semver("blerg")

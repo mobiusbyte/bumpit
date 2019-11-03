@@ -1,6 +1,6 @@
 import pytest
 
-from bumpit.core.versions.calver.parsers import parse
+from bumpit.core.versions.calver.parsers import parse_calver
 
 
 @pytest.mark.parametrize(
@@ -26,16 +26,16 @@ from bumpit.core.versions.calver.parsers import parse
     ],
 )
 def test_parse(version_format, version):
-    calver = parse(version_format, version)
+    calver = parse_calver(version, version_format)
 
     assert version == str(calver)
 
 
 def test_parse_invalid_version_format_no_date_tokens():
     with pytest.raises(ValueError):
-        parse("MAJOR.MINOR.MICRO.MODIFIER", "1.2.3.nerp")
+        parse_calver("1.2.3.nerp", "MAJOR.MINOR.MICRO.MODIFIER")
 
 
 def test_parse_invalid_version():
     with pytest.raises(ValueError):
-        parse("YYYY", "1.2.3")
+        parse_calver("1.2.3", "YYYY")

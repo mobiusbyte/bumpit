@@ -3,7 +3,7 @@ from datetime import date
 import pytest
 from freezegun import freeze_time
 
-from bumpit.core.versions.calver.parsers import parse
+from bumpit.core.versions.calver.parsers import parse_calver
 from bumpit.core.versions.calver.transformers import (
     CalverIncrementingTransformer,
     CalverStaticTransformer,
@@ -26,39 +26,41 @@ class TestIncrementingTransformer:
     )
     def test_transform(self, part, expected_version):
         new_calver = self._transform(
-            part, parse(self._version_format, self._raw_version)
+            part, parse_calver(self._raw_version, self._version_format)
         )
         assert expected_version == str(new_calver)
 
     def test_transform_auto_same_date_tokens_bumps_next_numerical_token(self):
         with freeze_time(date(2019, 10, 15)):
             new_calver = self._transform(
-                "auto", parse(self._version_format, "201910.1.10.100.abc")
+                "auto", parse_calver("201910.1.10.100.abc", self._version_format)
             )
             assert "201910.2.0.0." == str(new_calver)
 
     def test_transform_auto_new_date_tokens_clears_numerical_tokens(self):
         with freeze_time(date(2019, 12, 15)):
             new_calver = self._transform(
-                "auto", parse(self._version_format, "201910.1.10.100.abc")
+                "auto", parse_calver("201910.1.10.100.abc", self._version_format)
             )
             assert "201912.0.0.0." == str(new_calver)
 
     def test_transform_auto_no_changes(self):
         with freeze_time(date(2019, 12, 15)):
             with pytest.raises(ValueError):
-                self._transform("auto", parse("YYYYMM", "201912"))
+                self._transform("auto", parse_calver("201912", "YYYYMM"))
 
     def test_transform_auto_current_version_is_ahead_of_today(self):
         with freeze_time(date(2019, 12, 15)):
             with pytest.raises(ValueError):
                 self._transform(
-                    "auto", parse(self._version_format, "202010.1.10.100.abc")
+                    "auto", parse_calver("202010.1.10.100.abc", self._version_format)
                 )
 
     def test_transform_invalid_part(self):
         with pytest.raises(ValueError):
-            self._transform("modifier", parse(self._version_format, self._raw_version))
+            self._transform(
+                "modifier", parse_calver(self._raw_version, self._version_format)
+            )
 
 
 class TestStaticTransformer:
@@ -79,35 +81,37 @@ class TestStaticTransformer:
     )
     def test_transform(self, part, value, expected_version):
         new_calver = self._transform(
-            part, parse(self._version_format, self._raw_version), value
+            part, parse_calver(self._raw_version, self._version_format), value
         )
         assert expected_version == str(new_calver)
 
     def test_transform_add_modifier(self):
         new_calver = self._transform(
-            "modifier", parse(self._version_format, "201910.1.10.100."), "ghi"
+            "modifier", parse_calver("201910.1.10.100.", self._version_format), "ghi"
         )
         assert "201910.1.10.100.ghi" == str(new_calver)
 
     def test_transform_invalid_part(self):
         with pytest.raises(ValueError):
-            self._transform("dummy", parse(self._version_format, self._raw_version), 1)
+            self._transform(
+                "dummy", parse_calver(self._raw_version, self._version_format), 1
+            )
 
     def test_transform_invalid_value_for_numerical_part(self):
         with pytest.raises(ValueError):
             self._transform(
-                "major", parse(self._version_format, self._raw_version), "a"
+                "major", parse_calver(self._raw_version, self._version_format), "a"
             )
 
     @pytest.mark.parametrize("value", [9, 10])
     def test_transform_non_increasing_numerical_part(self, value):
         with pytest.raises(ValueError):
             self._transform(
-                "minor", parse(self._version_format, self._raw_version), value
+                "minor", parse_calver(self._raw_version, self._version_format), value
             )
 
     def test_transform_non_changing_date_part(self):
-        version = parse(self._version_format, self._raw_version)
+        version = parse_calver(self._raw_version, self._version_format)
         value = version.calendar_date
 
         with pytest.raises(ValueError):
@@ -115,7 +119,7 @@ class TestStaticTransformer:
 
     def test_transform_non_changing_non_numerical_part(self):
         part = "modifier"
-        version = parse(self._version_format, self._raw_version)
+        version = parse_calver(self._raw_version, self._version_format)
         value = getattr(version, part)
 
         with pytest.raises(ValueError):

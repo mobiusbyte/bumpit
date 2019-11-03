@@ -3,7 +3,7 @@ from datetime import date
 import pytest
 from freezegun import freeze_time
 
-from bumpit.core.versions.calver import next_calendar_version
+from bumpit.core.versions import next_version, CALVER_STRATEGY
 
 
 @pytest.mark.parametrize(
@@ -23,7 +23,8 @@ from bumpit.core.versions.calver import next_calendar_version
 def test_next_calendar_version(part, force_value, expected_next_version):
     today = date(2020, 1, 1)
     with freeze_time(today):
-        actual_new_version = next_calendar_version(
+        actual_new_version = next_version(
+            target_strategy=CALVER_STRATEGY,
             current_version="201910.1.10.100.abc",
             part=part,
             force_value=force_value,
