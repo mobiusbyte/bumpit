@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from bumpit.core.versions.calver import parse
 from bumpit.core.versions.calver.calver import CalVer
 from bumpit.core.versions.calver.constants import (
     MAJOR_PART,
@@ -30,7 +31,7 @@ class CalverIncrementingTransformer:
     def _auto_transform(self, today, version, transform_delegate):
         version_format = version.version_format
 
-        probe_version = CalVer.parse(version_format, str(version))
+        probe_version = parse(version_format, str(version))
         probe_version.calendar_date = today
 
         version_str = str(version)
@@ -66,7 +67,7 @@ class CalverStaticTransformer:
 
     @staticmethod
     def _transform_date_part(part, version, static):
-        probe_version = CalVer.parse(version.version_format, str(version))
+        probe_version = parse(version.version_format, str(version))
         probe_version.calendar_date = static
 
         if str(probe_version) == str(version):
@@ -88,7 +89,7 @@ class CalverStaticTransformer:
         if getattr(version, part) >= value:
             raise ValueError(f"Can only increase {part} part.")
 
-        new_version = CalVer.parse(version.version_format, str(version))
+        new_version = parse(version.version_format, str(version))
         resettable_numeric_fields = {
             MAJOR_PART: [MINOR_PART, MICRO_PART],
             MINOR_PART: [MICRO_PART],
@@ -108,7 +109,7 @@ class CalverStaticTransformer:
         if version.modifier == static:
             raise ValueError(f"No detected version change.")
 
-        new_version = CalVer.parse(version.version_format, str(version))
+        new_version = parse(version.version_format, str(version))
         new_version.modifier = static
 
         return new_version
