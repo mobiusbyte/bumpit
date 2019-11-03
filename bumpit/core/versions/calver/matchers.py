@@ -8,9 +8,8 @@ from bumpit.core.versions.calver.constants import (
     MINOR_PART,
     MICRO_PART,
     MODIFIER_PART,
+    DATE_PARTS,
 )
-
-DATE_PARTS = {YEAR_PART, MONTH_PART, DAY_PART}
 
 
 @dataclass

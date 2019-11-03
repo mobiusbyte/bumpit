@@ -1,12 +1,7 @@
 import re
 
 from bumpit.core.versions.calver.calver import CalVer
-from bumpit.core.versions.calver.constants import (
-    YEAR_PART,
-    MONTH_PART,
-    DAY_PART,
-    MODIFIER_PART,
-)
+from bumpit.core.versions.calver.constants import YEAR_PART, MODIFIER_PART, DATE_PARTS
 from bumpit.core.versions.calver.formatters import build_formatter
 from bumpit.core.versions.calver.matchers import TokenMatcher
 
@@ -28,21 +23,24 @@ def _build_calver(version_format, formatter, token_specs, match):
     calver = CalVer(version_format=version_format, formatter=formatter)
 
     for i, token_spec in enumerate(token_specs):
-        group = match.group(i + 1)
-
-        if token_spec.part_type == YEAR_PART:
-            year = int(group)
-            if len(group) != 4:
-                year += 2000
-
-            calver.calendar_date = calver.calendar_date.replace(year=year)
-        elif token_spec.part_type == MONTH_PART:
-            calver.calendar_date = calver.calendar_date.replace(month=int(group))
-        elif token_spec.part_type == DAY_PART:
-            calver.calendar_date = calver.calendar_date.replace(day=int(group))
-        elif token_spec.part_type == MODIFIER_PART:
-            calver.modifier = group
-        else:
-            setattr(calver, token_spec.part_type, int(group))
+        _update_calver_fields(calver, token_spec, raw_value=match.group(i + 1))
 
     return calver
+
+
+def _update_calver_fields(calver, token_spec, raw_value):
+    part_type = token_spec.part_type
+    if part_type == MODIFIER_PART:
+        calver.modifier = raw_value
+    elif part_type in DATE_PARTS:
+        _update_calver_date(calver, part_type, raw_value)
+    else:
+        setattr(calver, part_type, int(raw_value))
+
+
+def _update_calver_date(calver, part_type, raw_value):
+    value = int(raw_value)
+    if part_type == YEAR_PART and len(raw_value) != 4:
+        value += 2000
+
+    calver.calendar_date = calver.calendar_date.replace(**{part_type: value})
