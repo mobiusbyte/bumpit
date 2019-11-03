@@ -1,4 +1,6 @@
 # bumpit
+[![CircleCI](https://circleci.com/gh/mobiusbyte/bumpit/tree/master.svg?style=svg)](https://circleci.com/gh/mobiusbyte/bumpit/tree/master)
+
 A small command line tool to bump tracked versions in your repository.
 
 It is designed to integrate well with your CI/CD pipeline. Simply install and run `bumpit` as part of your pipeline. Let the robots do the boring work!
