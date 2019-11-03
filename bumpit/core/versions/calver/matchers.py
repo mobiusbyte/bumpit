@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 
 from bumpit.core.versions.calver.constants import (
-    DATE_PARTS,
     MONTH_PART,
     YEAR_PART,
     DAY_PART,
@@ -10,6 +9,8 @@ from bumpit.core.versions.calver.constants import (
     MICRO_PART,
     MODIFIER_PART,
 )
+
+DATE_PARTS = {YEAR_PART, MONTH_PART, DAY_PART}
 
 
 @dataclass
