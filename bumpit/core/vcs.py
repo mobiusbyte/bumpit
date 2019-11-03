@@ -3,10 +3,16 @@ import os
 
 class Git:
     def __init__(
-        self, dry_run, tag, tag_format, auto_remote_push, logger, command_executor=None
+        self,
+        dry_run,
+        apply_tag,
+        tag_format,
+        auto_remote_push,
+        logger,
+        command_executor=None,
     ):
         self._dry_run = dry_run
-        self._tag = tag
+        self._apply_tag = apply_tag
         self._tag_format = self._parse_tag_format(tag_format)
         self._auto_remote_push = auto_remote_push
         self._logger = logger
@@ -24,7 +30,7 @@ class Git:
         )
 
     def _git_tag(self, current_version, bumped_version):
-        if not self._tag:
+        if not self._apply_tag:
             self._logger.info("Skipped tagging...")
             return
 
@@ -51,7 +57,7 @@ class Git:
             self._logger.info(f"[DRY-RUN] Ran `{command}`")
         else:
             if self._command_executor(command) != 0:
-                raise Exception(f"Failed to execute {command}")
+                raise Exception(f"Failed to execute {command}.")
 
             self._logger.info(f"[OK] {command}")
 

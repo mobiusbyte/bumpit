@@ -2,13 +2,16 @@ from dataclasses import dataclass
 import os
 import yaml
 
+from bumpit.core.config.strategy import Strategy
+from bumpit.core.config.tag import Tag
+
 
 @dataclass
 class Configuration:
+    config_file: str
     current_version: str
-    strategy: str
-    tag: bool
-    tag_format: str
+    strategy: Strategy
+    tag: Tag
     auto_remote_push: bool
     tracked_files: list
 
@@ -16,21 +19,14 @@ class Configuration:
     def parse(file):
         contents = Configuration._load_config(file)
 
-        mandatory_fields = [
-            "current_version",
-            "strategy",
-            "tag",
-            "tag_format",
-            "tracked_files",
-        ]
+        mandatory_fields = ["current_version", "strategy", "tag", "tracked_files"]
         for field in mandatory_fields:
             if contents.get(field) is None:
-                raise ValueError(f"Configuration field is missing '{field}'")
+                raise ValueError(f"Configuration field is missing '{field}'.")
 
-        if contents["tag"] not in [True, False]:
-            raise ValueError(
-                f"Invalid tag value '{contents['tag']}'. It should be a bool."
-            )
+        contents["strategy"] = Strategy.load(contents["strategy"])
+        contents["tag"] = Tag.load(contents["tag"])
+        contents["config_file"] = file
 
         return Configuration(**contents)
 

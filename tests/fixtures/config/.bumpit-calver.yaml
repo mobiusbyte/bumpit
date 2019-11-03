@@ -1,7 +1,11 @@
 current_version: "201910.1.0"
-strategy: "calver"
-tag: True
-tag_format: "{version}"
+strategy:
+  name: "calver"
+  part: "auto"
+  version_format: "YYYYMM.MINOR.MICRO"
+tag:
+  apply: True
+  format: "{version}"
 auto_remote_push: False
 tracked_files:
   - setup.py

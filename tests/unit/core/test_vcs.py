@@ -28,7 +28,7 @@ class TestGit:
     def test_update_dry_run_tagging_disabled(self):
         git = Git(
             dry_run=True,
-            tag=False,
+            apply_tag=False,
             tag_format=self._tag_format,
             auto_remote_push=False,
             logger=self._logger_spy,
@@ -47,7 +47,7 @@ class TestGit:
     def test_update_tagging_disabled(self):
         git = Git(
             dry_run=False,
-            tag=False,
+            apply_tag=False,
             tag_format=self._tag_format,
             auto_remote_push=False,
             logger=self._logger_spy,
@@ -69,7 +69,7 @@ class TestGit:
     def test_update_dry_run_tagging_enabled(self):
         git = Git(
             dry_run=True,
-            tag=True,
+            apply_tag=True,
             tag_format=self._tag_format,
             auto_remote_push=False,
             logger=self._logger_spy,
@@ -91,7 +91,7 @@ class TestGit:
     def test_update_dry_run_auto_remote_push_enabled(self):
         git = Git(
             dry_run=True,
-            tag=True,
+            apply_tag=True,
             tag_format=self._tag_format,
             auto_remote_push=True,
             logger=self._logger_spy,
@@ -114,7 +114,7 @@ class TestGit:
         with pytest.raises(ValueError):
             Git(
                 dry_run=True,
-                tag=True,
+                apply_tag=True,
                 tag_format="invalid_format",
                 auto_remote_push=False,
                 logger=self._logger_spy,
@@ -126,7 +126,7 @@ class TestGit:
 
         git = Git(
             dry_run=False,
-            tag=False,
+            apply_tag=False,
             tag_format=self._tag_format,
             auto_remote_push=False,
             logger=self._logger_spy,
