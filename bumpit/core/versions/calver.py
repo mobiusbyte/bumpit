@@ -24,48 +24,49 @@ class TokenMatcherSpec:
     part_type: str
 
 
-YEAR_TYPE = "year"
-MONTH_TYPE = "month"
-DAY_TYPE = "day"
-MAJOR_TYPE = "major"
-MINOR_TYPE = "minor"
-MICRO_TYPE = "micro"
-MODIFIER_TYPE = "modifier"
+YEAR_PART = "year"
+MONTH_PART = "month"
+DAY_PART = "day"
+MAJOR_PART = "major"
+MINOR_PART = "minor"
+MICRO_PART = "micro"
+MODIFIER_PART = "modifier"
 
-DATE_TOKEN_TYPES = [YEAR_TYPE, MONTH_TYPE, DAY_TYPE]
+DATE_PARTS = [YEAR_PART, MONTH_PART, DAY_PART]
+
 
 MUTEX_TOKEN_GROUPS = [
     [
-        TokenMatcherSpec(token="YYYY", part_type=YEAR_TYPE, regex_pattern="(\\d{4})"),
-        TokenMatcherSpec(token="0Y", part_type=YEAR_TYPE, regex_pattern="(\\d{2})"),
-        TokenMatcherSpec(token="YY", part_type=YEAR_TYPE, regex_pattern="(\\d{1,2})"),
+        TokenMatcherSpec(token="YYYY", part_type=YEAR_PART, regex_pattern="(\\d{4})"),
+        TokenMatcherSpec(token="0Y", part_type=YEAR_PART, regex_pattern="(\\d{2})"),
+        TokenMatcherSpec(token="YY", part_type=YEAR_PART, regex_pattern="(\\d{1,2})"),
     ],
     [
-        TokenMatcherSpec(token="0M", part_type=MONTH_TYPE, regex_pattern="(\\d{2})"),
-        TokenMatcherSpec(token="MM", part_type=MONTH_TYPE, regex_pattern="(\\d{1,2})"),
+        TokenMatcherSpec(token="0M", part_type=MONTH_PART, regex_pattern="(\\d{2})"),
+        TokenMatcherSpec(token="MM", part_type=MONTH_PART, regex_pattern="(\\d{1,2})"),
     ],
     [
-        TokenMatcherSpec(token="0D", part_type=DAY_TYPE, regex_pattern="(\\d{2})"),
-        TokenMatcherSpec(token="DD", part_type=DAY_TYPE, regex_pattern="(\\d{1,2})"),
+        TokenMatcherSpec(token="0D", part_type=DAY_PART, regex_pattern="(\\d{2})"),
+        TokenMatcherSpec(token="DD", part_type=DAY_PART, regex_pattern="(\\d{1,2})"),
     ],
     [
         TokenMatcherSpec(
-            token="MAJOR", part_type=MAJOR_TYPE, regex_pattern="(0|[1-9]\\d*)"
+            token="MAJOR", part_type=MAJOR_PART, regex_pattern="(0|[1-9]\\d*)"
         )
     ],
     [
         TokenMatcherSpec(
-            token="MINOR", part_type=MINOR_TYPE, regex_pattern="(0|[1-9]\\d*)"
+            token="MINOR", part_type=MINOR_PART, regex_pattern="(0|[1-9]\\d*)"
         )
     ],
     [
         TokenMatcherSpec(
-            token="MICRO", part_type=MICRO_TYPE, regex_pattern="(0|[1-9]\\d*)"
+            token="MICRO", part_type=MICRO_PART, regex_pattern="(0|[1-9]\\d*)"
         )
     ],
     [
         TokenMatcherSpec(
-            token="MODIFIER", part_type=MODIFIER_TYPE, regex_pattern="([0-9a-zA-Z-]+)?"
+            token="MODIFIER", part_type=MODIFIER_PART, regex_pattern="([0-9a-zA-Z-]+)?"
         )
     ],
 ]
@@ -112,17 +113,17 @@ class CalVer:
         for i, token_spec in enumerate(token_specs):
             group = match.group(i + 1)
 
-            if token_spec.part_type == YEAR_TYPE:
+            if token_spec.part_type == YEAR_PART:
                 year = int(group)
                 if len(group) != 4:
                     year += 2000
 
                 calver.calendar_date = calver.calendar_date.replace(year=year)
-            elif token_spec.part_type == MONTH_TYPE:
+            elif token_spec.part_type == MONTH_PART:
                 calver.calendar_date = calver.calendar_date.replace(month=int(group))
-            elif token_spec.part_type == DAY_TYPE:
+            elif token_spec.part_type == DAY_PART:
                 calver.calendar_date = calver.calendar_date.replace(day=int(group))
-            elif token_spec.part_type == MODIFIER_TYPE:
+            elif token_spec.part_type == MODIFIER_PART:
                 calver.modifier = group
             else:
                 setattr(calver, token_spec.part_type, int(group))
@@ -136,18 +137,18 @@ class CalVer:
         for i, token_spec in enumerate(token_specs):
             group = match.group(i + 1)
 
-            if token_spec.part_type == YEAR_TYPE:
+            if token_spec.part_type == YEAR_PART:
                 partial_formatter = {
                     4: "{calendar_date:%Y}",
                     2: "{calendar_date:%y}",
                     1: "{calendar_short_year}",
                 }[len(group)]
-            elif token_spec.part_type == MONTH_TYPE:
+            elif token_spec.part_type == MONTH_PART:
                 partial_formatter = {
                     2: "{calendar_date:%m}",
                     1: "{calendar_date.month}",
                 }[len(group)]
-            elif token_spec.part_type == DAY_TYPE:
+            elif token_spec.part_type == DAY_PART:
                 partial_formatter = {2: "{calendar_date:%d}", 1: "{calendar_date.day}"}[
                     len(group)
                 ]
@@ -172,7 +173,7 @@ class TokenMatcher:
         )
 
         for token_spec in ordered_token_specs:
-            if token_spec.part_type in DATE_TOKEN_TYPES:
+            if token_spec.part_type in DATE_PARTS:
                 return regex_pattern, ordered_token_specs
 
         raise ValueError(f"Missing date token in version_format '{version_format}'")
@@ -222,7 +223,7 @@ class TokenMatcher:
 
     @staticmethod
     def _safe_swaps(token_matcher_spec):
-        if token_matcher_spec.part_type == MONTH_TYPE:
+        if token_matcher_spec.part_type == MONTH_PART:
             return ["major", "minor", "micro", "modifier"]
         return []
 
@@ -237,26 +238,56 @@ class TokenMatcher:
 
 
 class CalverIncrementingTransformer:
+    NUMERICAL_PARTS = [MAJOR_PART, MINOR_PART, MICRO_PART]
+
     def __call__(self, part, version):
         transform_delegate = CalverStaticTransformer()
+        today = datetime.today().date()
 
         if part == "date":
-            return transform_delegate(part, version, datetime.today().date())
-        elif part in [MAJOR_TYPE, MINOR_TYPE, MICRO_TYPE]:
+            return transform_delegate(part, version, today)
+        elif part in self.NUMERICAL_PARTS:
             return transform_delegate(part, version, getattr(version, part) + 1)
+        elif part == "auto":
+            return self._auto_transform(today, version, transform_delegate)
 
         raise ValueError(f"Cannot increment {part}.")
+
+    def _auto_transform(self, today, version, transform_delegate):
+        version_format = version.version_format
+
+        probe_version = CalVer.parse(version_format, str(version))
+        probe_version.calendar_date = today
+
+        version_str = str(version)
+
+        if str(probe_version) < version_str:
+            raise ValueError(
+                f"Current version {version_str} is already ahead of today's version"
+            )
+        elif str(probe_version) > version_str:
+            return str(
+                CalVer(version_format, calendar_date=today, formatter=version.formatter)
+            )
+        else:
+            for part in self.NUMERICAL_PARTS:
+                if part in probe_version.formatter:
+                    return transform_delegate(
+                        part, probe_version, getattr(probe_version, part) + 1
+                    )
+
+            raise ValueError(f"No detected version change.")
 
 
 class CalverStaticTransformer:
     DATE_FIELDS = ["date"]
-    NUMERICAL_FIELDS = [MAJOR_TYPE, MINOR_TYPE, MICRO_TYPE]
-    NON_NUMERICAL_FIELDS = [MODIFIER_TYPE]
+    NUMERICAL_FIELDS = [MAJOR_PART, MINOR_PART, MICRO_PART]
+    NON_NUMERICAL_FIELDS = [MODIFIER_PART]
 
     def __call__(self, part, version, static):
         if part == "date":
             return self._transform_date_part(part, version, static)
-        elif part == MODIFIER_TYPE:
+        elif part == MODIFIER_PART:
             return self._transform_modifier_part(part, version, static)
         elif part in CalverStaticTransformer.NUMERICAL_FIELDS:
             return self._transform_numerical_part(part, version, static)
@@ -289,9 +320,9 @@ class CalverStaticTransformer:
 
         new_version = CalVer.parse(version.version_format, str(version))
         resettable_numeric_fields = {
-            MAJOR_TYPE: [MINOR_TYPE, MICRO_TYPE],
-            MINOR_TYPE: [MICRO_TYPE],
-            MICRO_TYPE: [],
+            MAJOR_PART: [MINOR_PART, MICRO_PART],
+            MINOR_PART: [MICRO_PART],
+            MICRO_PART: [],
         }[part]
 
         setattr(new_version, part, static)

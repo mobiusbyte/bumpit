@@ -1,4 +1,7 @@
+from datetime import date
+
 import pytest
+from freezegun import freeze_time
 
 from bumpit.core.versions.calver import (
     CalverIncrementingTransformer,
@@ -26,6 +29,32 @@ class TestIncrementingTransformer:
             part, CalVer.parse(self._version_format, self._raw_version)
         )
         assert expected_version == str(new_calver)
+
+    def test_transform_auto_same_date_tokens_bumps_next_numerical_token(self):
+        with freeze_time(date(2019, 10, 15)):
+            new_calver = self._transform(
+                "auto", CalVer.parse(self._version_format, "201910.1.10.100.abc")
+            )
+            assert "201910.2.0.0." == str(new_calver)
+
+    def test_transform_auto_new_date_tokens_clears_numerical_tokens(self):
+        with freeze_time(date(2019, 12, 15)):
+            new_calver = self._transform(
+                "auto", CalVer.parse(self._version_format, "201910.1.10.100.abc")
+            )
+            assert "201912.0.0.0." == str(new_calver)
+
+    def test_transform_auto_no_changes(self):
+        with freeze_time(date(2019, 12, 15)):
+            with pytest.raises(ValueError):
+                self._transform("auto", CalVer.parse("YYYYMM", "201912"))
+
+    def test_transform_auto_current_version_is_ahead_of_today(self):
+        with freeze_time(date(2019, 12, 15)):
+            with pytest.raises(ValueError):
+                self._transform(
+                    "auto", CalVer.parse(self._version_format, "202010.1.10.100.abc")
+                )
 
     def test_transform_invalid_part(self):
         with pytest.raises(ValueError):
