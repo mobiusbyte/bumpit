@@ -8,6 +8,7 @@ from bumpit.core.versions.calver.constants import (
     DAY_PART,
     MODIFIER_PART,
 )
+from bumpit.core.versions.calver.formatters import build_formatter
 from bumpit.core.versions.calver.matchers import TokenMatcher
 
 
@@ -42,7 +43,7 @@ class CalVer:
             )
 
         calver = CalVer._parsed_calver(version_format, token_specs, match)
-        calver.formatter = CalVer._formatter(regex_pattern, token_specs, match)
+        calver.formatter = build_formatter(regex_pattern, token_specs, match)
         return calver
 
     @staticmethod
@@ -68,34 +69,3 @@ class CalVer:
                 setattr(calver, token_spec.part_type, int(group))
 
         return calver
-
-    @staticmethod
-    def _formatter(regex_pattern, token_specs, match):
-        formatter = regex_pattern
-
-        for i, token_spec in enumerate(token_specs):
-            group = match.group(i + 1)
-
-            if token_spec.part_type == YEAR_PART:
-                partial_formatter = {
-                    4: "{calendar_date:%Y}",
-                    2: "{calendar_date:%y}",
-                    1: "{calendar_short_year}",
-                }[len(group)]
-            elif token_spec.part_type == MONTH_PART:
-                partial_formatter = {
-                    2: "{calendar_date:%m}",
-                    1: "{calendar_date.month}",
-                }[len(group)]
-            elif token_spec.part_type == DAY_PART:
-                partial_formatter = {2: "{calendar_date:%d}", 1: "{calendar_date.day}"}[
-                    len(group)
-                ]
-            else:
-                partial_formatter = f"{{{token_spec.part_type}}}"
-
-            formatter = formatter.replace(
-                token_spec.regex_pattern, partial_formatter, 1
-            )
-
-        return formatter
