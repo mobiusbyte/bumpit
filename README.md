@@ -163,6 +163,7 @@ twine upload dist/*
 Thankful for the generous tools provided by:
 * [GitHub](https://github.com/) - project hosting
 * [CircleCI](https://circleci.com/) - continuous integration
+* [Code Climate](https://codeclimate.com/) - automated code review for test coverage and maintainability
 
 # License
 `bumpit` is released under the [MIT License](https://opensource.org/licenses/MIT).
