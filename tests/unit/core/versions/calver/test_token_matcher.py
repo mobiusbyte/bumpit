@@ -1,6 +1,6 @@
 import pytest
 
-from bumpit.core.versions.calver import CalVerMatcher
+from bumpit.core.versions.calver import TokenMatcher
 
 
 def fixture_generator():
@@ -24,4 +24,4 @@ def fixture_generator():
 @pytest.mark.parametrize("invalid_version_token", list(fixture_generator()))
 def test_invalid_version_format(invalid_version_token):
     with pytest.raises(ValueError):
-        CalVerMatcher().search(invalid_version_token, "")
+        TokenMatcher.build(invalid_version_token)

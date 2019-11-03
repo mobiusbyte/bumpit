@@ -4,7 +4,6 @@ import pytest
 from freezegun import freeze_time
 
 from bumpit.core.versions import next_version, SEMVER_STRATEGY, CALVER_STRATEGY
-from bumpit.core.versions.calver import CALVER_AUTO
 
 
 def test_next_version_semver():
@@ -24,9 +23,9 @@ def test_next_version_calver():
         actual_next_version = next_version(
             strategy=CALVER_STRATEGY,
             current_version="2019.11.02",
-            part=CALVER_AUTO,
+            part="0D",
             force_value=None,
-            version_format="YYYY.0M.OD",
+            version_format="YYYY.0M.0D",
         )
     assert expected_next_version == actual_next_version
 
