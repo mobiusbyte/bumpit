@@ -9,7 +9,6 @@ from bumpit.core.versions.calver.constants import (
     MODIFIER_PART,
 )
 from bumpit.core.versions.calver.matchers import TokenMatcher
-from bumpit.core.versions.errors import InvalidVersion
 
 
 @dataclass
@@ -38,7 +37,7 @@ class CalVer:
 
         match = re.search(f"^{regex_pattern}$", version)
         if not match:
-            raise InvalidVersion(
+            raise ValueError(
                 f"Invalid calendar version '{version}' with format '{version_format}'."
             )
 

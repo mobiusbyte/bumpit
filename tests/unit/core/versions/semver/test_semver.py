@@ -1,6 +1,6 @@
 import pytest
 
-from bumpit.core.versions.semver import SemVer, InvalidVersion
+from bumpit.core.versions.semver import SemVer
 
 
 @pytest.mark.parametrize(
@@ -35,5 +35,5 @@ def test_parse(
 
 
 def test_parse_invalid():
-    with pytest.raises(InvalidVersion):
+    with pytest.raises(ValueError):
         SemVer.parse("blerg")

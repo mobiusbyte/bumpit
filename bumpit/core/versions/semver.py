@@ -1,8 +1,6 @@
 import re
 from dataclasses import dataclass
 
-from bumpit.core.versions.errors import InvalidVersion
-
 SEMVER_STRATEGY = "semver"
 
 
@@ -29,7 +27,7 @@ class SemVer:
         semver_pattern = "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"  # noqa
         match = re.search(semver_pattern, version)
         if not match:
-            raise InvalidVersion(f"Invalid semantic version '{version}'.")
+            raise ValueError(f"Invalid semantic version '{version}'.")
 
         return SemVer(
             major=int(match.group(1)),

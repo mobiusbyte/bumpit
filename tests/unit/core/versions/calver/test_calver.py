@@ -1,7 +1,6 @@
 import pytest
 
 from bumpit.core.versions.calver import CalVer
-from bumpit.core.versions.errors import InvalidVersion
 
 
 @pytest.mark.parametrize(
@@ -38,5 +37,5 @@ def test_parse_invalid_version_format_no_date_tokens():
 
 
 def test_parse_invalid_version():
-    with pytest.raises(InvalidVersion):
+    with pytest.raises(ValueError):
         CalVer.parse("YYYY", "1.2.3")
