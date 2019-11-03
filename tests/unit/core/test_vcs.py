@@ -1,4 +1,4 @@
-from bumpit.core.vcs import Git
+from bumpit.core.vcs import Git, GitSettings
 from tests import LoggerSpy
 import pytest
 
@@ -21,16 +21,17 @@ class TestGit:
     def setup(self):
         self._logger_spy = LoggerSpy()
         self._command_executor = CommandExecutorSpy()
-        self._tag_format = "v{version}"
         self._current_version = "0.0.0"
         self._bumped_version = "1.0.0"
+
+        self._settings = GitSettings(
+            apply_tag=False, tag_format="v{version}", auto_remote_push=False
+        )
 
     def test_update_dry_run_tagging_disabled(self):
         git = Git(
             dry_run=True,
-            apply_tag=False,
-            tag_format=self._tag_format,
-            auto_remote_push=False,
+            settings=self._settings,
             logger=self._logger_spy,
             command_executor=self._command_executor,
         )
@@ -47,9 +48,7 @@ class TestGit:
     def test_update_tagging_disabled(self):
         git = Git(
             dry_run=False,
-            apply_tag=False,
-            tag_format=self._tag_format,
-            auto_remote_push=False,
+            settings=self._settings,
             logger=self._logger_spy,
             command_executor=self._command_executor,
         )
@@ -67,11 +66,11 @@ class TestGit:
         ] == self._logger_spy.messages
 
     def test_update_dry_run_tagging_enabled(self):
+        self._settings.apply_tag = True
+
         git = Git(
             dry_run=True,
-            apply_tag=True,
-            tag_format=self._tag_format,
-            auto_remote_push=False,
+            settings=self._settings,
             logger=self._logger_spy,
             command_executor=self._command_executor,
         )
@@ -89,11 +88,11 @@ class TestGit:
         ] == self._logger_spy.messages
 
     def test_update_dry_run_auto_remote_push_enabled(self):
+        self._settings.auto_remote_push = True
+
         git = Git(
             dry_run=True,
-            apply_tag=True,
-            tag_format=self._tag_format,
-            auto_remote_push=True,
+            settings=self._settings,
             logger=self._logger_spy,
             command_executor=self._command_executor,
         )
@@ -103,20 +102,17 @@ class TestGit:
         assert [
             "[DRY-RUN] Ran `git add .`",
             "[DRY-RUN] Ran `git commit -m 'Bumped version from 0.0.0 → 1.0.0.'`",
-            (
-                "[DRY-RUN] "
-                "Ran `git tag -a 'v1.0.0' -m 'Bumped version from 0.0.0 → 1.0.0.'`"
-            ),
+            "Skipped tagging...",
             "[DRY-RUN] Ran `git push origin master --tags`",
         ] == self._logger_spy.messages
 
     def test_invalid_tag_format(self):
+        self._settings.tag_format = "invalid_format"
+
         with pytest.raises(ValueError):
             Git(
                 dry_run=True,
-                apply_tag=True,
-                tag_format="invalid_format",
-                auto_remote_push=False,
+                settings=self._settings,
                 logger=self._logger_spy,
                 command_executor=self._command_executor,
             )
@@ -126,9 +122,7 @@ class TestGit:
 
         git = Git(
             dry_run=False,
-            apply_tag=False,
-            tag_format=self._tag_format,
-            auto_remote_push=False,
+            settings=self._settings,
             logger=self._logger_spy,
             command_executor=command_executor,
         )

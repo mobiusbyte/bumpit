@@ -2,7 +2,7 @@ import os
 
 from bumpit.core.config import Configuration
 from bumpit.core.folder import FolderManager
-from bumpit.core.vcs import Git
+from bumpit.core.vcs import Git, GitSettings
 from bumpit.core.versions import next_version
 
 
@@ -31,9 +31,11 @@ class BumpIt:
         )
         self._vcs = Git(
             dry_run=dry_run,
-            apply_tag=configuration.tag.apply,
-            tag_format=configuration.tag.format,
-            auto_remote_push=configuration.auto_remote_push,
+            settings=GitSettings(
+                apply_tag=configuration.tag.apply,
+                tag_format=configuration.tag.format,
+                auto_remote_push=configuration.auto_remote_push,
+            ),
             logger=logger,
         )
         self._current_version = configuration.current_version
