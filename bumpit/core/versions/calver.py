@@ -1,6 +1,6 @@
 import re
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime
 
 from bumpit.core.versions.errors import InvalidVersion
 
@@ -8,7 +8,13 @@ CALVER_STRATEGY = "calver"
 
 
 def next_calendar_version(current_version, part, force_value, version_format):
-    return "2019.11.03"
+    version = CalVer.parse(version_format, current_version)
+    if force_value is None:
+        transform = CalverIncrementingTransformer()
+        return str(transform(part, version))
+    else:
+        transform = CalverStaticTransformer()
+        return str(transform(part, version, force_value))
 
 
 @dataclass
@@ -59,7 +65,7 @@ MUTEX_TOKEN_GROUPS = [
     ],
     [
         TokenMatcherSpec(
-            token="MODIFIER", part_type=MODIFIER_TYPE, regex_pattern="([0-9a-zA-Z-]+)"
+            token="MODIFIER", part_type=MODIFIER_TYPE, regex_pattern="([0-9a-zA-Z-]+)?"
         )
     ],
 ]
@@ -69,10 +75,10 @@ MUTEX_TOKEN_GROUPS = [
 class CalVer:
     version_format: str
     calendar_date: date = date(2000, 1, 1)
-    major: int = None
-    minor: int = None
-    micro: int = None
-    modifier: str = None
+    major: int = 0
+    minor: int = 0
+    micro: int = 0
+    modifier: str = ""
     formatter: str = ""
 
     def __str__(self):
@@ -82,7 +88,7 @@ class CalVer:
             major=self.major,
             minor=self.minor,
             micro=self.micro,
-            modifier=self.modifier,
+            modifier=self.modifier or "",
         )
 
     @staticmethod
@@ -228,3 +234,80 @@ class TokenMatcher:
         }
 
         return [ranked_token_specs[key] for key in sorted(ranked_token_specs)]
+
+
+class CalverIncrementingTransformer:
+    def __call__(self, part, version):
+        transform_delegate = CalverStaticTransformer()
+
+        if part == "date":
+            return transform_delegate(part, version, datetime.today().date())
+        elif part in [MAJOR_TYPE, MINOR_TYPE, MICRO_TYPE]:
+            return transform_delegate(part, version, getattr(version, part) + 1)
+
+        raise ValueError(f"Cannot increment {part}.")
+
+
+class CalverStaticTransformer:
+    DATE_FIELDS = ["date"]
+    NUMERICAL_FIELDS = [MAJOR_TYPE, MINOR_TYPE, MICRO_TYPE]
+    NON_NUMERICAL_FIELDS = [MODIFIER_TYPE]
+
+    def __call__(self, part, version, static):
+        if part == "date":
+            return self._transform_date_part(part, version, static)
+        elif part == MODIFIER_TYPE:
+            return self._transform_modifier_part(part, version, static)
+        elif part in CalverStaticTransformer.NUMERICAL_FIELDS:
+            return self._transform_numerical_part(part, version, static)
+        else:
+            raise ValueError(f"Invalid part {part}")
+
+    @staticmethod
+    def _transform_date_part(part, version, static):
+        probe_version = CalVer.parse(version.version_format, str(version))
+        probe_version.calendar_date = static
+
+        if str(probe_version) == str(version):
+            raise ValueError(f"No detected version change.")
+
+        return CalVer(
+            version_format=version.version_format,
+            calendar_date=static,
+            formatter=version.formatter,
+        )
+
+    @staticmethod
+    def _transform_numerical_part(part, version, static):
+        try:
+            value = int(static)
+        except ValueError:
+            raise ValueError(f"Expecting {part} to be an integer")
+
+        if getattr(version, part) >= value:
+            raise ValueError(f"Can only increase {part} part.")
+
+        new_version = CalVer.parse(version.version_format, str(version))
+        resettable_numeric_fields = {
+            MAJOR_TYPE: [MINOR_TYPE, MICRO_TYPE],
+            MINOR_TYPE: [MICRO_TYPE],
+            MICRO_TYPE: [],
+        }[part]
+
+        setattr(new_version, part, static)
+        for reset_field in resettable_numeric_fields:
+            setattr(new_version, reset_field, 0)
+
+        new_version.modifier = ""
+
+        return new_version
+
+    @staticmethod
+    def _transform_modifier_part(part, version, static):
+        if version.modifier == static:
+            raise ValueError(f"No detected version change.")
+
+        new_version = CalVer.parse(version.version_format, str(version))
+        new_version.modifier = static
+
+        return new_version

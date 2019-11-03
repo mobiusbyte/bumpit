@@ -23,7 +23,7 @@ def test_next_version_calver():
         actual_next_version = next_version(
             strategy=CALVER_STRATEGY,
             current_version="2019.11.02",
-            part="0D",
+            part="date",
             force_value=None,
             version_format="YYYY.0M.0D",
         )
