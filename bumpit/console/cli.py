@@ -1,6 +1,6 @@
 import click
 from click import ClickException
-from bumpit.core.bumpit import run
+from bumpit.core.bumpit import run, RunSettings
 
 
 class ConsoleLogger:
@@ -49,7 +49,13 @@ class ConsoleLogger:
 )
 def bumpit(config, part, value, dry_run):
     try:
-        run(config, ConsoleLogger(), dry_run, target_part=part, force_value=value)
+        run(
+            config,
+            ConsoleLogger(),
+            run_settings=RunSettings(
+                dry_run=dry_run, target_part=part, force_value=value
+            ),
+        )
     except Exception as e:
         raise ClickException(e)
 

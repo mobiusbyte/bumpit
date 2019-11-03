@@ -38,4 +38,10 @@ def test_next_version_calver():
 
 def test_next_version_unsupported_strategy():
     with pytest.raises(ValueError):
-        next_version("dummy", "1.0.0", "minor", "2", "")
+        next_version(
+            strategy_settings=StrategySettings(
+                target_strategy="dummy", current_version="1.0.0", version_format=""
+            ),
+            part="minor",
+            force_value="2",
+        )

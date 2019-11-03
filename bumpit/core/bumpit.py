@@ -1,4 +1,6 @@
 import os
+from dataclasses import dataclass
+from typing import Any
 
 from bumpit.core.config import Configuration
 from bumpit.core.folder import FolderManager
@@ -7,12 +9,19 @@ from bumpit.core.versions import next_version
 from bumpit.core.versions.strategy import StrategySettings
 
 
-def run(config, logger, dry_run, target_part=None, force_value=None):
+@dataclass
+class RunSettings:
+    dry_run: bool
+    target_part: Any
+    force_value: Any
+
+
+def run(config, logger, run_settings):
     configuration = Configuration.parse(config)
 
-    executor = BumpIt(configuration, dry_run, logger)
+    executor = BumpIt(configuration, run_settings.dry_run, logger)
 
-    part = target_part or configuration.strategy.part
+    part = run_settings.target_part or configuration.strategy.part
 
     bumped_version = next_version(
         strategy_settings=StrategySettings(
@@ -21,7 +30,7 @@ def run(config, logger, dry_run, target_part=None, force_value=None):
             current_version=configuration.current_version,
         ),
         part=part,
-        force_value=force_value,
+        force_value=run_settings.force_value,
     )
 
     executor.execute(bumped_version)
