@@ -22,7 +22,7 @@ class Configuration:
         mandatory_fields = ["current_version", "strategy", "tag", "tracked_files"]
         for field in mandatory_fields:
             if contents.get(field) is None:
-                raise ValueError(f"Configuration field is missing '{field}'")
+                raise ValueError(f"Configuration field is missing '{field}'.")
 
         contents["strategy"] = Strategy.load(contents["strategy"])
         contents["tag"] = Tag.load(contents["tag"])

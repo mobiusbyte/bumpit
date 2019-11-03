@@ -57,7 +57,7 @@ class Git:
             self._logger.info(f"[DRY-RUN] Ran `{command}`")
         else:
             if self._command_executor(command) != 0:
-                raise Exception(f"Failed to execute {command}")
+                raise Exception(f"Failed to execute {command}.")
 
             self._logger.info(f"[OK] {command}")
 

@@ -29,7 +29,7 @@ class SemVer:
         semver_pattern = "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"  # noqa
         match = re.search(semver_pattern, version)
         if not match:
-            raise InvalidVersion(f"Invalid semantic version '{version}'")
+            raise InvalidVersion(f"Invalid semantic version '{version}'.")
 
         return SemVer(
             major=int(match.group(1)),
@@ -72,14 +72,14 @@ class SemverStaticTransformer:
         elif part in SemverStaticTransformer.NON_NUMERICAL_FIELDS:
             return self._transform_non_numerical_part(part, version, static)
         else:
-            raise ValueError(f"Invalid part {part}")
+            raise ValueError(f"Invalid {part} part.")
 
     @staticmethod
     def _transform_numerical_part(part, version, static):
         try:
             value = int(static)
         except ValueError:
-            raise ValueError(f"Expecting {part} to be an integer")
+            raise ValueError(f"Expecting {part} to be an integer.")
 
         if getattr(version, part) >= value:
             raise ValueError(f"Can only increase {part} part.")

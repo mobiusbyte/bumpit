@@ -11,4 +11,4 @@ def next_version(strategy, current_version, part, force_value, version_format):
     if delegate:
         return delegate(current_version, part, force_value, version_format)
 
-    raise ValueError(f"Unsupported strategy {strategy}")
+    raise ValueError(f"Unsupported strategy {strategy}.")

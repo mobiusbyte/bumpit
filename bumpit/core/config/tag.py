@@ -16,11 +16,11 @@ class Tag:
 
         try:
             tag = Tag(**section)
-        except TypeError:
-            raise ValueError("Missing tag apply and/or format")
+        except TypeError as e:
+            raise ValueError(f"Missing tag field(s). {e}")
 
         if "{version}" not in tag.format:
-            raise ValueError("Tag format must include '{version}' token")
+            raise ValueError("Tag format must include '{version}' token.")
 
         return tag
 

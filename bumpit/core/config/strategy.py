@@ -11,14 +11,14 @@ class Strategy:
     def load(section):
         try:
             strategy = Strategy(**section)
-        except TypeError:
-            raise ValueError("Missing strategy name and/or part")
+        except TypeError as e:
+            raise ValueError(f"Missing strategy field(s). {e}")
 
         if not strategy.name:
-            raise ValueError("Strategy name cannot be empty")
+            raise ValueError("Strategy name cannot be empty.")
 
         if strategy.part is None:
-            raise ValueError("Strategy part cannot be null")
+            raise ValueError("Strategy part cannot be null.")
 
         return strategy
 

@@ -70,7 +70,7 @@ class TokenMatcher:
             if token_spec.part_type in DATE_PARTS:
                 return regex_pattern, ordered_token_specs
 
-        raise ValueError(f"Missing date token in version_format '{version_format}'")
+        raise ValueError(f"Missing date token in version_format '{version_format}'.")
 
     @staticmethod
     def _parse_version_format(version_format):

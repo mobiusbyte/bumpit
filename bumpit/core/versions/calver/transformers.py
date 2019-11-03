@@ -37,7 +37,7 @@ class CalverIncrementingTransformer:
 
         if str(probe_version) < version_str:
             raise ValueError(
-                f"Current version {version_str} is already ahead of today's version"
+                f"Current version {version_str} is already ahead of today's version."
             )
         elif str(probe_version) > version_str:
             return str(
@@ -62,7 +62,7 @@ class CalverStaticTransformer:
         elif part in NUMERICAL_PARTS:
             return self._transform_numerical_part(part, version, static)
         else:
-            raise ValueError(f"Invalid part {part}")
+            raise ValueError(f"Invalid part {part}.")
 
     @staticmethod
     def _transform_date_part(part, version, static):
@@ -83,7 +83,7 @@ class CalverStaticTransformer:
         try:
             value = int(static)
         except ValueError:
-            raise ValueError(f"Expecting {part} to be an integer")
+            raise ValueError(f"Expecting {part} to be an integer.")
 
         if getattr(version, part) >= value:
             raise ValueError(f"Can only increase {part} part.")

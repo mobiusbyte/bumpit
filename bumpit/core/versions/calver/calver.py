@@ -39,7 +39,7 @@ class CalVer:
         match = re.search(f"^{regex_pattern}$", version)
         if not match:
             raise InvalidVersion(
-                f"Invalid calendar version '{version}' with format '{version_format}'"
+                f"Invalid calendar version '{version}' with format '{version_format}'."
             )
 
         calver = CalVer._parsed_calver(version_format, token_specs, match)
