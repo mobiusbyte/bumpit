@@ -5,4 +5,17 @@ jobs:
       - image: circleci/python:3.7
     steps:
       - checkout
-      - run: pip install --user tox && tox
+      - run: pip install --user tox
+      - run:
+          name: Setup Code Climate test-reporter
+          command: |
+            # download test reporter as a static binary
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+            ./cc-test-reporter before-build
+          when: always
+      - run: tox
+      - run:
+          name: Send coverage report to Code Climate
+          command: |
+            ./cc-test-reporter after-build --id $CC_TEST_REPORTER_ID --exit-code $?
