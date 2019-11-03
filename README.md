@@ -1,5 +1,5 @@
 # bumpit
-[![CircleCI](https://circleci.com/gh/mobiusbyte/bumpit/tree/master.svg?style=svg)](https://circleci.com/gh/mobiusbyte/bumpit/tree/master)
+[![CircleCI](https://circleci.com/gh/mobiusbyte/bumpit/tree/master.svg?style=svg)](https://circleci.com/gh/mobiusbyte/bumpit/tree/master) [![Maintainability](https://api.codeclimate.com/v1/badges/b1b1ead0507244047780/maintainability)](https://codeclimate.com/github/mobiusbyte/bumpit/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/b1b1ead0507244047780/test_coverage)](https://codeclimate.com/github/mobiusbyte/bumpit/test_coverage)
 
 A small command line tool to bump tracked versions in your repository.
 
