@@ -24,6 +24,21 @@ class SemverStaticTransformer:
 
     @staticmethod
     def _transform_numerical_part(part, version, static):
+        value = SemverStaticTransformer._numerical_value(version, part, static)
+
+        new_version = parse_semver("0.0.0")
+
+        target_part_index = NUMERICAL_PARTS.index(part)
+        for current_index, current_part in enumerate(NUMERICAL_PARTS):
+            if target_part_index == current_index:
+                setattr(new_version, current_part, value)
+            elif target_part_index > current_index:
+                setattr(new_version, current_part, getattr(version, current_part))
+
+        return new_version
+
+    @staticmethod
+    def _numerical_value(version, part, static):
         try:
             value = int(static)
         except ValueError:
@@ -32,20 +47,7 @@ class SemverStaticTransformer:
         if getattr(version, part) >= value:
             raise ValueError(f"Can only increase {part} part.")
 
-        new_version = parse_semver("0.0.0")
-
-        target_part_index = NUMERICAL_PARTS.index(part)
-        for current_index, current_part in enumerate(NUMERICAL_PARTS):
-            version_part = getattr(version, current_part)
-            if current_index == target_part_index:
-                version_part = static
-
-            if target_part_index < current_index:
-                version_part = 0
-
-            setattr(new_version, current_part, version_part)
-
-        return new_version
+        return value
 
     @staticmethod
     def _transform_non_numerical_part(part, version, static):
