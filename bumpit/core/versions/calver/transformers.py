@@ -8,6 +8,8 @@ from bumpit.core.versions.calver.constants import (
     MODIFIER_PART,
 )
 
+TRANSFORM_DATE_PART = "date"
+AUTOINCREMENT_PARTS = "auto"
 NUMERICAL_PARTS = [MAJOR_PART, MINOR_PART, MICRO_PART]
 
 
@@ -16,11 +18,11 @@ class CalverIncrementingTransformer:
         transform_delegate = CalverStaticTransformer()
         today = datetime.today().date()
 
-        if part == "date":
+        if part == TRANSFORM_DATE_PART:
             return transform_delegate(part, version, today)
         elif part in NUMERICAL_PARTS:
             return transform_delegate(part, version, getattr(version, part) + 1)
-        elif part == "auto":
+        elif part == AUTOINCREMENT_PARTS:
             return self._auto_transform(today, version, transform_delegate)
 
         raise ValueError(f"Cannot increment {part}.")
@@ -52,11 +54,8 @@ class CalverIncrementingTransformer:
 
 
 class CalverStaticTransformer:
-    DATE_FIELDS = ["date"]
-    NON_NUMERICAL_FIELDS = [MODIFIER_PART]
-
     def __call__(self, part, version, static):
-        if part == "date":
+        if part == TRANSFORM_DATE_PART:
             return self._transform_date_part(part, version, static)
         elif part == MODIFIER_PART:
             return self._transform_modifier_part(part, version, static)
