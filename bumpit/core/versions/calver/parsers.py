@@ -1,6 +1,6 @@
 import re
 
-from bumpit.core.versions.calver import CalVer
+from bumpit.core.versions.calver.calver import CalVer
 from bumpit.core.versions.calver.constants import (
     YEAR_PART,
     MONTH_PART,
