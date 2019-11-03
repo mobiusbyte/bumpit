@@ -16,31 +16,38 @@ class ConsoleLogger:
 
 @click.command()
 @click.option(
-    "--dry-run", "-d", is_flag=True, default=False, help="Run the tool in dry run mode"
-)
-@click.option(
     "--config",
     "-c",
     default=".bumpit.yaml",
     type=click.Path(exists=True),
-    help="Configuration settings",
+    help="(optional) configuration settings. Defaults to `.bumpit.yaml`",
 )
 @click.option(
     "--part",
     "-p",
     default="",
-    help="Strategy part override. Defaults to `strategy.part` from config file.",
+    help=(
+        "(optional) strategy part override. "
+        "Defaults to `strategy.part` from the config file."
+    ),
 )
 @click.option(
     "--value",
     "-v",
     default=None,
     help=(
-        "Part value override. "
+        "(optional) part value override. "
         "Any part can be overrode by this value as long as the value is valid."
     ),
 )
-def bumpit(dry_run, config, part, value):
+@click.option(
+    "--dry-run",
+    "-d",
+    is_flag=True,
+    default=False,
+    help="(optional) run the tool in dry run mode. Defaults to false.",
+)
+def bumpit(config, part, value, dry_run):
     try:
         run(config, ConsoleLogger(), dry_run, target_part=part, force_value=value)
     except Exception as e:

@@ -16,7 +16,6 @@ There are two ways to use `bumpit`
 1. through the command line, or
 2. through your python code
 
-
 ## Through CLI
 At a high level, you need to
 1. setup the configuration file `.bumpconfig.yaml` in your target folder.
@@ -27,8 +26,14 @@ At a high level, you need to
 Usage: bumpit [OPTIONS]
 
 Options:
-  -d, --dry-run      Run the tool in dry run mode
-  -c, --config TEXT  Configuration settings
+  -c, --config PATH  (optional) configuration settings. Defaults to
+                     `.bumpit.yaml`
+  -p, --part TEXT    (optional) strategy part override. Defaults to
+                     `strategy.part` from the config file.
+  -v, --value TEXT   (optional) part value override. Any part can be overrode
+                     by this value as long as the value is valid.
+  -d, --dry-run      (optional) run the tool in dry run mode. Defaults to
+                     false.
   --help             Show this message and exit.
 ```
 
@@ -37,17 +42,20 @@ Just do `from bumpit.core.bumpit import run` in your code.
 
 Check out the [bumpit cli code](https://github.com/mobiusbyte/bumpit/blob/master/bumpit/console/cli.py#L29-L32) for concrete example.
 
-
 ## Configuration
-`bumpit` relies heavily on a configuration file to capture all runtime context of `bumpit`. This config file is named `.bumpconfig.yaml` by default. You can override this using the `--config` option in the command line.
+`bumpit` relies heavily on a configuration file to capture runtime context of `bumpit`. This config file is named `.bumpconfig.yaml` by default. You can override this using the `--config` option in the command line.
 
 The config file looks like:
 
 ```yaml
-current_version: "0.0.1"
-strategy: "semver-patch"
-tag: True
-tag_format: "{version}"
+current_version: "201910.1.0"
+strategy:
+  name: "calver"
+  part: "minor"
+  version_format: "YYYYMM.MINOR.MICRO"
+tag:
+  apply: True
+  format: "{version}"
 auto_remote_push: True  # or False
 tracked_files:
 - setup.py
@@ -55,11 +63,18 @@ tracked_files:
 
 where:
 * `current_version` - the current version of your files. It needs to be wrapped in quotes to force parsing to be string (e.g. avoid calver current_version to be parsed as float)
-* `strategy` - supported values `semver-major`, `semver-minor`, `semver-patch`, `calver`
-* `tag` - bool value to instruct the tool to tag the repository after the version update
-* `tag_format` - format of the tag. Some people prefer to add prefix to their tag versions (e.g. `release/1.0.1`). As long as the `{version}` is present, then it is a valid `tag_format`
+* `strategy` - strategy section
+   * `name` - supported values: `semver`, `calver`
+   * `part` - the target part to update when `bumpit` runs. Please refer to the description below for strategy specific values.
+   * `version_format` - the format of the version. This only applies for `calver`
+* `tag` - tag section
+   * `apply` - bool value to instruct the tool to tag the repository after the version update
+   * `format` - format of the tag. Some people prefer to add prefix to their tag versions (e.g. `release/1.0.1`). As long as the `{version}` is present, then it is a valid `tag_format`
 * `auto_remote_push` - bool flag that guards whether to push commit and/or tag changes to remote repository. It should never be wrapped in quotes so that it will be properly parsed as a bool
 * `tracked_files` - a list of relative filenames to update version to. If the current_version is not found, the tool simply skips this file
+
+## Important Notes
+* Collision of versions is handled outside of `bumpit`. Other tools such as a good version control system fits better in solving this problem.
 
 # Examples
 Check out the following repositories for examples:
@@ -73,9 +88,27 @@ The tool currently supports the following versioning strategies
 * [Calendar Version](https://calver.org/)
 
 ## Semantic Version
-`bumpit` implements a very basic semver scheme. It validates the right format using the [proposed format](https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string).
+`bumpit` fully supports strict semver specification defined in [semver.org](https://semver.org/). It validates the right format using the [semver.org proposed format](https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string).
 
-Notice that semantic version has optional `meta` tokens after the usual `major.minor.patch` tokens. When `meta` token is present and `bumpit` runs, `bumpit` naively updates the `major.minor.patch` version based on the strategy and leaves the `meta` token as is. If this is not your expected behaviour, please help me understand how it should be handled. You can create an issue and perhaps a PR of your proposed solution.
+### Configuration
+Here is an [example](https://github.com/mobiusbyte/bumpit/blob/master/tests/fixtures/config/.bumpit-semver.yaml) of a configuration file for semver.
+
+Important notes on configuration:
+* `strategy.name` must be `semver`
+* `strategy.part` supported values are `major`, `minor`, `patch`
+* `startegy.version_format` does not apply to `semver`. It is completely ignored in the code. It is safe (and better) to not include this section for `semver` use case to avoid confusing the user.
+
+### Part updates
+Any semver part can be updated by giving `bumpit` a specific value to update the part to. This can be done through:
+ - command line by using the `--part and --value` cli options, or
+ - program by providing the `target_part` and `force_value` in [bumpit#run](https://github.com/mobiusbyte/bumpit/blob/master/bumpit/core/bumpit.py) method
+
+Due to the free form nature of the `pre_release` and `build_metadata` parts, they can only be updated through the force method described above.
+
+However, the biggest gain from using `bumpit` is to let the tool auto update your versions for you.
+
+Out of the box, `bumpit` can auto update the `major`, `minor`, and the `patch` parts of semver. To accomplish this, specify the target part in the config file `strategy.part` section.
+
 
 ## Calendar Version
 `bumpit` implements a very basic calver scheme. It assumes that the version follows the format `YYYYmm.variant` where
