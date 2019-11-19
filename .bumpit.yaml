@@ -2,6 +2,8 @@ current_version: "0.5.0"
 strategy:
   name: "semver"
   part: "minor"
+commit:
+  author: "Jill San Luis <jill.devs@gmail.com>"
 tag:
   apply: True
   format: "{version}"

@@ -44,6 +44,7 @@ class BumpIt:
         self._vcs = Git(
             dry_run=dry_run,
             settings=GitSettings(
+                author=configuration.commit.author,
                 apply_tag=configuration.tag.apply,
                 tag_format=configuration.tag.format,
                 auto_remote_push=configuration.auto_remote_push,

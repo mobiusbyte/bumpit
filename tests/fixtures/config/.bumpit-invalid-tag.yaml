@@ -2,6 +2,8 @@ current_version: "0.0.1"
 strategy:
   name: "semver"
   part: "minor"
+commit:
+  author: "Homer Simpson <homer@simpson.com>"
 tag:
   apply: not_a_bool
   format: "{version}"

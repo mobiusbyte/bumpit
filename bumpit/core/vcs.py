@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 @dataclass
 class GitSettings:
+    author: str
     apply_tag: bool
     tag_format: str
     auto_remote_push: bool
@@ -12,6 +13,7 @@ class GitSettings:
 class Git:
     def __init__(self, dry_run, settings, logger, command_executor=None):
         self._dry_run = dry_run
+        self._author = settings.author
         self._apply_tag = settings.apply_tag
         self._tag_format = self._parse_tag_format(settings.tag_format)
         self._auto_remote_push = settings.auto_remote_push
@@ -26,7 +28,8 @@ class Git:
     def _git_commit(self, current_version, bumped_version):
         self._execute_command("git add .")
         self._execute_command(
-            f"git commit -m '{self._bump_message(current_version, bumped_version)}'"
+            f"git commit --author '{self._author}' "
+            f"-m '{self._bump_message(current_version, bumped_version)}'"
         )
 
     def _git_tag(self, current_version, bumped_version):
