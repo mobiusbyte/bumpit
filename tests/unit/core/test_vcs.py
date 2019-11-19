@@ -25,7 +25,10 @@ class TestGit:
         self._bumped_version = "1.0.0"
 
         self._settings = GitSettings(
-            apply_tag=False, tag_format="v{version}", auto_remote_push=False
+            author="A B <a@b.com>",
+            apply_tag=False,
+            tag_format="v{version}",
+            auto_remote_push=False,
         )
 
     def test_update_dry_run_tagging_disabled(self):
@@ -40,7 +43,8 @@ class TestGit:
         assert self._command_executor.call_count == 0
         assert [
             "[DRY-RUN] Ran `git add .`",
-            "[DRY-RUN] Ran `git commit -m 'Bumped version from 0.0.0 → 1.0.0.'`",
+            "[DRY-RUN] Ran `git commit --author 'A B <a@b.com>' "
+            "-m 'Bumped version from 0.0.0 → 1.0.0.'`",
             "Skipped tagging...",
             "Skipped pushing changes to remote...",
         ] == self._logger_spy.messages
@@ -56,11 +60,13 @@ class TestGit:
 
         assert [
             "git add .",
-            "git commit -m 'Bumped version from 0.0.0 → 1.0.0.'",
+            "git commit --author 'A B <a@b.com>' "
+            "-m 'Bumped version from 0.0.0 → 1.0.0.'",
         ] == self._command_executor.commands
         assert [
             "[OK] git add .",
-            "[OK] git commit -m 'Bumped version from 0.0.0 → 1.0.0.'",
+            "[OK] git commit --author 'A B <a@b.com>' "
+            "-m 'Bumped version from 0.0.0 → 1.0.0.'",
             "Skipped tagging...",
             "Skipped pushing changes to remote...",
         ] == self._logger_spy.messages
@@ -79,7 +85,8 @@ class TestGit:
         assert self._command_executor.call_count == 0
         assert [
             "[DRY-RUN] Ran `git add .`",
-            "[DRY-RUN] Ran `git commit -m 'Bumped version from 0.0.0 → 1.0.0.'`",
+            "[DRY-RUN] Ran `git commit --author 'A B <a@b.com>' "
+            "-m 'Bumped version from 0.0.0 → 1.0.0.'`",
             (
                 "[DRY-RUN] "
                 "Ran `git tag -a 'v1.0.0' -m 'Bumped version from 0.0.0 → 1.0.0.'`"
@@ -101,7 +108,8 @@ class TestGit:
         assert self._command_executor.call_count == 0
         assert [
             "[DRY-RUN] Ran `git add .`",
-            "[DRY-RUN] Ran `git commit -m 'Bumped version from 0.0.0 → 1.0.0.'`",
+            "[DRY-RUN] Ran `git commit --author 'A B <a@b.com>' "
+            "-m 'Bumped version from 0.0.0 → 1.0.0.'`",
             "Skipped tagging...",
             "[DRY-RUN] Ran `git push origin master --tags`",
         ] == self._logger_spy.messages

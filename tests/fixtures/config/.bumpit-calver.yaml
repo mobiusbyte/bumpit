@@ -3,6 +3,8 @@ strategy:
   name: "calver"
   part: "auto"
   version_format: "YYYYMM.MINOR.MICRO"
+commit:
+  author: "Homer Simpson <homer@simpson.com>"
 tag:
   apply: True
   format: "{version}"

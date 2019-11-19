@@ -2,6 +2,7 @@ from dataclasses import dataclass
 import os
 import yaml
 
+from bumpit.core.config.commit import Commit
 from bumpit.core.config.strategy import Strategy
 from bumpit.core.config.tag import Tag
 
@@ -11,6 +12,7 @@ class Configuration:
     config_file: str
     current_version: str
     strategy: Strategy
+    commit: Commit
     tag: Tag
     auto_remote_push: bool
     tracked_files: list
@@ -25,6 +27,7 @@ class Configuration:
                 raise ValueError(f"Configuration field is missing '{field}'.")
 
         contents["strategy"] = Strategy.load(contents["strategy"])
+        contents["commit"] = Commit.load(contents["commit"])
         contents["tag"] = Tag.load(contents["tag"])
         contents["config_file"] = file
 
