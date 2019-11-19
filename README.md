@@ -55,6 +55,8 @@ strategy:
   name: "calver"
   part: "minor"
   version_format: "YYYYMM.MINOR.MICRO"
+commit:
+  author: "Jane Doe <jane@doe.com>"
 tag:
   apply: True
   format: "{version}"
@@ -69,6 +71,8 @@ where:
    * `name` - supported values: `semver`, `calver`
    * `part` - the target part to update when `bumpit` runs. Please refer to the description below for strategy specific values.
    * `version_format` - the format of the version. This only applies for `calver`
+* `commit` - commit section
+   * `author` - string value using [the standard git author format `A U Thor <author@example.com>`](https://git-scm.com/docs/git-commit#Documentation/git-commit.txt---authorltauthorgt)
 * `tag` - tag section
    * `apply` - bool value to instruct the tool to tag the repository after the version update
    * `format` - format of the tag. Some people prefer to add prefix to their tag versions (e.g. `release/1.0.1`). As long as the `{version}` is present, then it is a valid `tag_format`
