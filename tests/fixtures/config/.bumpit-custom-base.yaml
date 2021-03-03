@@ -1,0 +1,13 @@
+current_version: "0.0.1"
+base_branch: "main"
+strategy:
+  name: "semver"
+  part: "minor"
+commit:
+  author: "Homer Simpson <homer@simpson.com>"
+tag:
+  apply: True
+  format: "{version}"
+auto_remote_push: False
+tracked_files:
+  - setup.py

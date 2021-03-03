@@ -23,6 +23,7 @@ class TestGit:
         self._command_executor = CommandExecutorSpy()
         self._current_version = "0.0.0"
         self._bumped_version = "1.0.0"
+        self._base_branch = "main"
 
         self._settings = GitSettings(
             author="A B <a@b.com>",
@@ -38,7 +39,7 @@ class TestGit:
             logger=self._logger_spy,
             command_executor=self._command_executor,
         )
-        git.update(self._current_version, self._bumped_version)
+        git.update(self._current_version, self._bumped_version, self._base_branch)
 
         assert self._command_executor.call_count == 0
         assert [
@@ -56,7 +57,7 @@ class TestGit:
             logger=self._logger_spy,
             command_executor=self._command_executor,
         )
-        git.update(self._current_version, self._bumped_version)
+        git.update(self._current_version, self._bumped_version, self._base_branch)
 
         assert [
             "git add .",
@@ -80,7 +81,7 @@ class TestGit:
             logger=self._logger_spy,
             command_executor=self._command_executor,
         )
-        git.update(self._current_version, self._bumped_version)
+        git.update(self._current_version, self._bumped_version, self._base_branch)
 
         assert self._command_executor.call_count == 0
         assert [
@@ -103,7 +104,7 @@ class TestGit:
             logger=self._logger_spy,
             command_executor=self._command_executor,
         )
-        git.update(self._current_version, self._bumped_version)
+        git.update(self._current_version, self._bumped_version, self._base_branch)
 
         assert self._command_executor.call_count == 0
         assert [
@@ -111,7 +112,7 @@ class TestGit:
             "[DRY-RUN] Ran `git commit --author 'A B <a@b.com>' "
             "-m 'Bumped version from 0.0.0 → 1.0.0.'`",
             "Skipped tagging...",
-            "[DRY-RUN] Ran `git push origin master --tags`",
+            "[DRY-RUN] Ran `git push origin main --tags`",
         ] == self._logger_spy.messages
 
     def test_invalid_tag_format(self):
@@ -135,4 +136,4 @@ class TestGit:
             command_executor=command_executor,
         )
         with pytest.raises(Exception):
-            git.update(self._current_version, self._bumped_version)
+            git.update(self._current_version, self._bumped_version, self._base_branch)

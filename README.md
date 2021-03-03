@@ -51,6 +51,7 @@ The config file looks like:
 
 ```yaml
 current_version: "201910.1.0"
+base_branch: "master"
 strategy:
   name: "calver"
   part: "minor"
@@ -67,6 +68,7 @@ tracked_files:
 
 where:
 * `current_version` - the current version of your files. It needs to be wrapped in quotes to force parsing to be string (e.g. avoid calver current_version to be parsed as float)
+* `base_branch` - The name of base branch in the repository. Default value is `master` if it is not specified.
 * `strategy` - strategy section
    * `name` - supported values: `semver`, `calver`
    * `part` - the target part to update when `bumpit` runs. Please refer to the description below for strategy specific values.
