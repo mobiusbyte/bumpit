@@ -20,10 +20,10 @@ class Git:
         self._logger = logger
         self._command_executor = command_executor or os.system
 
-    def update(self, current_version, bumped_version):
+    def update(self, current_version, bumped_version, base_branch):
         self._git_commit(current_version, bumped_version)
         self._git_tag(current_version, bumped_version)
-        self._git_push()
+        self._git_push(base_branch)
 
     def _git_commit(self, current_version, bumped_version):
         self._execute_command("git add .")
@@ -46,9 +46,9 @@ class Git:
 
         self._execute_command(tag_command)
 
-    def _git_push(self):
+    def _git_push(self, base_branch):
         if self._auto_remote_push:
-            return self._execute_command("git push origin master --tags")
+            return self._execute_command(f"git push origin {base_branch} --tags")
         else:
             self._logger.info("Skipped pushing changes to remote...")
 

@@ -53,6 +53,7 @@ class BumpIt:
         )
         self._current_version = configuration.current_version
         self._tracked_files = configuration.tracked_files + [configuration.config_file]
+        self._base_branch = configuration.base_branch
 
     def execute(self, bumped_version):
         self._folder_manager.update(
@@ -62,5 +63,7 @@ class BumpIt:
         )
 
         self._vcs.update(
-            current_version=self._current_version, bumped_version=bumped_version
+            current_version=self._current_version,
+            bumped_version=bumped_version,
+            base_branch=self._base_branch,
         )

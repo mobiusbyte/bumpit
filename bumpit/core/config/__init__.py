@@ -16,6 +16,7 @@ class Configuration:
     tag: Tag
     auto_remote_push: bool
     tracked_files: list
+    base_branch: str
 
     @staticmethod
     def parse(file):
@@ -30,6 +31,9 @@ class Configuration:
         contents["commit"] = Commit.load(contents["commit"])
         contents["tag"] = Tag.load(contents["tag"])
         contents["config_file"] = file
+
+        if contents.get("base_branch") is None:
+            contents["base_branch"] = "master"
 
         return Configuration(**contents)
 
